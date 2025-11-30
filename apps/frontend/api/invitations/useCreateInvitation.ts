@@ -1,3 +1,5 @@
+'use client';
+
 import { api } from '@/service/api-client';
 import useSWRMutation from 'swr/mutation';
 import { ReqBodyInvitationsRegisterType, ResBodyInvitationsRegisterType } from '@repo/api-models/invitations';

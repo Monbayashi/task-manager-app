@@ -1,6 +1,6 @@
 'use client';
 //configに設定する
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { initAmplify } from '@/service/amplify-client';
 import { useAuthStore } from '@/store/authStore';
 import './globals.css';
@@ -21,7 +21,9 @@ export default function RootLayout({
 
   return (
     <html lang="ja">
-      <body className="flex min-h-screen bg-gray-50 text-gray-900">{children}</body>
+      <body className="flex min-h-screen bg-gray-50 text-gray-900">
+        <Suspense>{children}</Suspense>
+      </body>
     </html>
   );
 }
