@@ -25,12 +25,11 @@ export default function ProtectedLayout({
 
   // ログイン済みチェック
   useEffect(() => {
-    console.log('ログイン済みチェック');
     const checkLogin = async () => {
-      console.log(`${pathName}?${pathParams.toString()}`);
       try {
         await getCurrentUser();
-      } catch {
+      } catch (err) {
+        console.error(err);
         const redirectURL = encodeURIComponent(`${pathName}?${pathParams.toString()}`);
         router.push(`/login?redirect=${redirectURL}`);
       } finally {
@@ -42,7 +41,6 @@ export default function ProtectedLayout({
 
   // 登録ユーザ存在チェック
   useEffect(() => {
-    console.log('登録ユーザ存在チェック:', stauts);
     if (stauts === 'done') {
       if (!user) {
         router.push(`/wellcome`);
