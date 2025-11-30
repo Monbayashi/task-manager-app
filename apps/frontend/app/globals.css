@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, sans-serif;
+  line-height: 1.5;
+}
+
+@theme {
+  --z-index-sticky: 200;
+  --z-index-header: 300;
+  --z-index-modal-backdrop: 400;
+  --z-index-modal: 410;
+  --z-index-popover: 500;
+  --z-index-toast: 600;
+  --z-index-skip-link: 999;
+  --z-index-debug: 9999;
+}

@@ -1,0 +1,11 @@
+{
+  "app": "npx ts-node --prefer-ts-exts bin/app.ts",
+  "context": {
+    "env": "local",
+    "@aws-cdk/core:newStyleStackSynthesis": true
+  },
+  "watch": {
+    "include": ["lib/**/*.ts", "../apps/invitation-service/dist/**/*"],
+    "exclude": ["node_modules", "cdk.out"]
+  }
+}

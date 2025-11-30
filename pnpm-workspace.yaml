@@ -1,0 +1,12 @@
+packages:
+  - apps/*
+  - infra
+  - packages/*
+
+ignoredBuiltDependencies:
+  - sharp
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - aws-sdk
+  - unrs-resolver

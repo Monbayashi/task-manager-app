@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "✅ Running lint"
+pnpm turbo run lint --affected
+echo "✅ Running format"
+pnpm turbo run format --affected
+echo "✅ Running test"
+pnpm turbo run test --affected

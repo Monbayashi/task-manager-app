@@ -1,0 +1,8 @@
+{
+  "watch": ["../apps/invitation-service/dist/main.js"],
+  "delay": "1000",
+  "events": {
+    "restart": "pnpm localstack:deploy:lambda"
+  },
+  "exec": "echo 'farst exec'"
+}

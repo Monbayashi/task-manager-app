@@ -1,0 +1,71 @@
+{
+  // file設定
+  "files.eol": "\n",
+  "files.encoding": "utf8",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  // lint系設定
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "prettier.useEditorConfig": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always", // すべての自動修正を有効
+    "source.fixAll.eslint": "always" // ESLint の自動修正を保存時に実行
+  },
+  // todo-tree設定
+  "todo-tree.highlights.enabled": true,
+  "todo-tree.highlights.useColourScheme": false,
+  "todo-tree.general.tags": [
+    "TODO",
+    "FIXME",
+    "BUG",
+    "NOTE",
+    "INFO",
+    "HACK",
+    "OPTIMIZE",
+    "REFACTOR"
+  ],
+  "todo-tree.highlights.customHighlight": {
+    "TODO": {
+      "icon": "check",
+      "foreground": "#61AFEF",
+      "type": "text"
+    },
+    "FIXME": {
+      "icon": "alert",
+      "foreground": "#E06C75",
+      "type": "text"
+    },
+    "BUG": {
+      "icon": "bug",
+      "foreground": "#BE5046",
+      "type": "text"
+    },
+    "NOTE": {
+      "icon": "note",
+      "foreground": "#98C379",
+      "type": "text"
+    },
+    "INFO": {
+      "icon": "info",
+      "foreground": "#56B6C2",
+      "type": "text"
+    },
+    "HACK": {
+      "icon": "flame",
+      "foreground": "#E5C07B",
+      "type": "text"
+    },
+    "OPTIMIZE": {
+      "icon": "dashboard",
+      "foreground": "#C678DD",
+      "type": "text"
+    },
+    "REFACTOR": {
+      "icon": "tools",
+      "foreground": "#D19A66",
+      "type": "text"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+# デフォルトはLF
+* text=auto eol=lf
+
+# Windowsバッチ系だけCRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# バイナリは変換しない
+*.png binary
+*.jpg binary
+*.pdf binary
