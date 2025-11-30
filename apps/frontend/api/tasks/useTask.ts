@@ -1,3 +1,5 @@
+'use client';
+
 import { api } from '@/service/api-client';
 import useSWR from 'swr';
 import { ResBodyTasksTaskType } from '@repo/api-models/tasks';

@@ -1,3 +1,5 @@
+'use client';
+
 import { useAlertStore } from '@/store/alert';
 import { useAuthStore } from '@/store/authStore';
 import { fetchAuthSession } from 'aws-amplify/auth';

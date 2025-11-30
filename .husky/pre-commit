@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+echo "✅ Running Build"
+pnpm turbo run build --affected
 echo "✅ Running lint"
 pnpm turbo run lint --affected
 echo "✅ Running format"

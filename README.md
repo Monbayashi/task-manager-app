@@ -63,27 +63,43 @@ turborepoを使ってモノリポ構成で作成
 
 ## 開発作業手順
 
-※ ROOTで作業
+### ENVファイルを作成
+
+#### apps/frontend/.env.local
+
+```
+# 担当者に聞いてください。
+NEXT_PUBLIC_COGNITO_POOL_ID=
+NEXT_PUBLIC_COGNITO_CLIENT_ID=
+NEXT_PUBLIC_API_URL=
+NEXT_PUBLIC_DOMAIN=
+NEXT_COGNITO_ISSUER=
+```
+
+### ROOTの配下でコマンド
 
 ```
 # ========== 初回のみ ==========
-# git clone ....
+git clone https://github.com/Monbayashi/task-manager-app.git
 
 # 依存環境インストール
 pnpm install
 
-# invitation-serviceビルド (localstack起動に必要)
-pnpm turbo build --filter=invitation-service
+# ビルド (localstack起動に必要)
+pnpm turbo build
 
 # ========== 起動毎 ==========
 # localstack 起動 + DyanamoDB, Lambdaの初期デプロイ
 pnpm localstack:up
 
-# frontend backend 起動
-pnpm dev
+# frontend,backend 起動
+pnpm turbo dev --filter=frontend
+pnpm turbo dev --filter=backend
 
 # invitation-service 起動 (CloudWatchのログ確認 + build度に自動デプロイ)
+# ※チーム招待をすることでログが出ることを確認できる。
 pnpm localstack:dev
+
 ```
 
 ## コメントのタグ一覧

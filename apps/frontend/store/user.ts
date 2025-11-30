@@ -1,3 +1,5 @@
+'use client';
+
 import { fetcherMe } from '@/api/users/useMe';
 import { create } from 'zustand';
 import { ResBodyUsersMeType } from '@repo/api-models/users';

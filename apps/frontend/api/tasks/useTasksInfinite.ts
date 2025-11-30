@@ -1,3 +1,5 @@
+'use client';
+
 import { api } from '@/service/api-client';
 import { useSWRConfig } from 'swr';
 import useSWRInfinite from 'swr/infinite';

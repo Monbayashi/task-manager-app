@@ -1,3 +1,5 @@
+'use client';
+
 import { api } from '@/service/api-client';
 import { useAuthStore } from '@/store/authStore';
 import { useUserStore } from '@/store/user';

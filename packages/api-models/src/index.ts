@@ -9,7 +9,7 @@ export * from './tags/index.ts';
 // TASKS
 export * from './tasks/index.ts';
 // INVITATION
-export * from './invitation/index.ts';
+export * from './invitations/index.ts';
 // COUNTER
 export * from './summary/index.ts';
 

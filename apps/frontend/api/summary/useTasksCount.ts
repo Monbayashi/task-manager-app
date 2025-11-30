@@ -1,3 +1,5 @@
+'use client';
+
 import { api } from '@/service/api-client';
 import useSWR from 'swr';
 import { ResQuerySummaryCountsType } from '@repo/api-models/summary';

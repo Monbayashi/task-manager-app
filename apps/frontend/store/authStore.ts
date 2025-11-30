@@ -1,3 +1,5 @@
+'use client';
+
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { Hub } from 'aws-amplify/utils';
 import { create } from 'zustand';

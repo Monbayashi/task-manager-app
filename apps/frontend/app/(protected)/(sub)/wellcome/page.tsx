@@ -28,9 +28,9 @@ export default function WellcomePage() {
 
   const onSubmit = async (submitData: WellcomeFormType) => {
     try {
-      await trigger(submitData);
+      const { teamId } = await trigger(submitData);
       await mutateUser();
-      router.push('/home');
+      router.push(`/home?teamId=${teamId}`);
     } catch (err) {
       console.error(err);
     }

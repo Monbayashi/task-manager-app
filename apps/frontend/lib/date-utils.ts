@@ -1,5 +1,6 @@
+'use client';
+
 import { format } from 'date-fns';
-import { formatInTimeZone } from 'date-fns-tz';
 
 /** 渡した日付の週の範囲を取得 */
 export const getWeekRangeFromDate = (date: Date): { week: number; start: Date; end: Date } => {
