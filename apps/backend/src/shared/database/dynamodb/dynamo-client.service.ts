@@ -1,25 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { TypedConfigService } from '../../../common/config/typed-config.service';
-import pino from 'pino';
-
-const logger = pino({
-  level: 'debug',
-  transport: {
-    target: 'pino-pretty',
-    options: {
-      colorize: true,
-      translateTime: 'yyyy-mm-dd HH:MM:ss',
-      ignore: 'pid,hostname',
-      messageFormat: '[DYNAMO] {msg}',
-      destination: 1,
-    },
-  },
-});
 
 @Injectable()
 export class DynamoClientService {
+  private readonly logger = new Logger(DynamoClientService.name);
   public readonly client: DynamoDBClient;
   public readonly db: DynamoDBDocumentClient;
   public readonly taskTable: string;
@@ -37,10 +23,10 @@ export class DynamoClientService {
       maxAttempts: 10,
       retryMode: 'adaptive',
       logger: {
-        debug: (msg) => logger.silent(msg),
-        info: (msg) => logger.info(msg),
-        warn: (msg) => logger.warn(msg),
-        error: (msg) => logger.error(msg),
+        debug: (msg) => this.logger.debug(msg, 'DynamoDB'),
+        info: (msg) => this.logger.debug(msg, 'DynamoDB'),
+        warn: (msg) => this.logger.warn(msg, 'DynamoDB'),
+        error: (msg) => this.logger.error(msg, 'DynamoDB'),
       },
     });
 

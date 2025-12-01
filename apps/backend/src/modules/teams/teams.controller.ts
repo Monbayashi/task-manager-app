@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards, UsePip
 import type { Request } from 'express';
 import { CognitoAccessGuard } from 'src/common/guards/cognito-access.guard';
 import { TeamsService } from './teams.service';
-import { ZodValidationPipe } from 'nestjs-zod';
 import {
   ReqBodyTeamMemberUpdateDTO,
   ReqBodyTeamsRegisterDTO,
@@ -21,9 +20,10 @@ import {
   ResBodyTeamMemberUpdateType,
   ResBodyTeamMemberDeleteType,
 } from '@repo/api-models/teams';
+import { PrettyZodValidationPipe } from 'src/common/pipe/pretty-zod-validation.pipe';
 
-@Controller('teams')
-@UsePipes(ZodValidationPipe)
+@Controller('api/teams')
+@UsePipes(PrettyZodValidationPipe)
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
 

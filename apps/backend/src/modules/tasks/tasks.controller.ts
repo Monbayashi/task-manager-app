@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Param, Post, Query, Req, UseGuards, UseP
 import type { Request } from 'express';
 import { CognitoAccessGuard } from 'src/common/guards/cognito-access.guard';
 import { TasksService } from './tasks.service';
-import { ZodValidationPipe } from 'nestjs-zod';
 import {
   ResBodyTasksDeleteType,
   ResBodyTasksRegisterType,
@@ -20,9 +19,10 @@ import {
   ReqParamTasksUpdateDTO,
   ReqQueryTasksDto,
 } from './tasks.dto';
+import { PrettyZodValidationPipe } from 'src/common/pipe/pretty-zod-validation.pipe';
 
-@Controller('teams/:teamId/tasks')
-@UsePipes(ZodValidationPipe)
+@Controller('api/teams/:teamId/tasks')
+@UsePipes(PrettyZodValidationPipe)
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 

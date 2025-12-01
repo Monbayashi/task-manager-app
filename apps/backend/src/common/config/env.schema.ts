@@ -6,6 +6,8 @@ export const envSchema = z.object({
   // BACKEND
   BACKEND_PREFIX: z.string().min(1),
   BACKEND_PORT: z.string().transform(Number),
+  BACKEND_LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug', 'silent']),
+  BACKEND_CORS_ORIGIN: z.string().min(1),
   // AWS
   AWS_REGION: z.string().min(1),
   AWS_DYNAMO_ENDPOINT: z.string().optional(),
