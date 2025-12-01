@@ -1,22 +1,13 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
-  "globalEnv": ["NODE_ENV", "SNS_TOPIC_ARN"],
+  "globalEnv": ["NODE_ENV"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**"],
-      "env": [
-        "BACKEND_PREFIX",
-        "BACKEND_PORT",
-        "AWS_REGION",
-        "AWS_DYNAMO_ENDPOINT",
-        "AWS_DYNAMO_TASK_TABLE",
-        "AWS_DYNAMO_INVITATION_TABLE",
-        "AWS_COGNITO_USER_POOL_ID",
-        "AWS_COGNITO_CLIENT_ID"
-      ]
+      "env": []
     },
     "dev:prepare": {},
     "dev": {
