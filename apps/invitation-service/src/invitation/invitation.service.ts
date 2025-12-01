@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DynamoDBStreamEvent } from 'aws-lambda';
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
+import { TypedConfigService } from 'src/common/config/typed-config.service';
 
 @Injectable()
 export class InvitationService {
@@ -8,11 +9,11 @@ export class InvitationService {
   private topicArn: string;
   private readonly logger = new Logger(InvitationService.name);
 
-  constructor() {
-    this.topicArn = process.env.SNS_TOPIC_ARN || '';
+  constructor(private typedConfig: TypedConfigService) {
+    this.topicArn = this.typedConfig.get('AWS_SNS_TOPIC_ARN');
     this.snsClient = new SNSClient({
-      region: 'ap-northeast-1',
-      endpoint: 'http://host.docker.internal:4566',
+      region: this.typedConfig.get('AWS_REGION'),
+      endpoint: this.typedConfig.get('AWS_SNS_ENDPOINT') || undefined,
     });
   }
 

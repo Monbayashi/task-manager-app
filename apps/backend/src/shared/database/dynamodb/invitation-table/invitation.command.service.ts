@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { db, INVITATION_TABLE } from '../client';
 import { DeleteCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { v7 as uuid } from 'uuid';
 import { InvitationItem, UserRole } from './types';
 import { randomBytes } from 'crypto';
 import { addDays } from 'date-fns';
+import { DynamoClientService } from '../dynamo-client.service';
 
 @Injectable()
 export class InvitationCommandService {
+  constructor(private readonly dynamoClient: DynamoClientService) {}
+
   /**
    * 招待作成（UUID v7でソート可能）
    * @param teamId
@@ -44,9 +46,9 @@ export class InvitationCommandService {
       team_name: teamName,
     };
 
-    await db.send(
+    await this.dynamoClient.db.send(
       new PutCommand({
-        TableName: INVITATION_TABLE,
+        TableName: this.dynamoClient.invitationTable,
         Item: item,
       })
     );
@@ -64,9 +66,9 @@ export class InvitationCommandService {
    */
   async deleteInvitation(params: { teamId: string; inviteId: string }) {
     const { teamId, inviteId } = params;
-    await db.send(
+    await this.dynamoClient.db.send(
       new DeleteCommand({
-        TableName: INVITATION_TABLE,
+        TableName: this.dynamoClient.invitationTable,
         Key: {
           PK: `TEAM#${teamId}`,
           SK: `INVITE#${inviteId}`,

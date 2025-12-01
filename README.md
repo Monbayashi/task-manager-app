@@ -65,7 +65,7 @@ turborepoを使ってモノリポ構成で作成
 
 ### ENVファイルを作成
 
-#### apps/frontend/.env.local
+#### apps/frontend/.env
 
 ```
 # 担当者に聞いてください。
@@ -74,6 +74,52 @@ NEXT_PUBLIC_COGNITO_CLIENT_ID=
 NEXT_PUBLIC_API_URL=
 NEXT_PUBLIC_DOMAIN=
 NEXT_COGNITO_ISSUER=
+```
+
+#### apps/backend/.env.develop
+
+```
+BACKEND_PREFIX=api
+BACKEND_PORT=3001
+# AWS
+AWS_REGION=ap-northeast-1
+AWS_DYNAMO_ENDPOINT=http://localhost:4566
+AWS_DYNAMO_TASK_TABLE=task-table-v3
+AWS_DYNAMO_INVITATION_TABLE=task-table-invitation-v3
+AWS_COGNITO_USER_POOL_ID=ap-northeast-1_MD7zqiZga
+AWS_COGNITO_CLIENT_ID=7oa3l9iv02dr6vv6du8b0aqehm
+```
+
+#### apps/backend/.env.test
+
+```
+BACKEND_PREFIX=api
+BACKEND_PORT=3001
+# AWS
+AWS_REGION=ap-northeast-1
+AWS_DYNAMO_ENDPOINT=http://localhost:4566
+AWS_DYNAMO_TASK_TABLE=task-table-v3
+AWS_DYNAMO_INVITATION_TABLE=task-table-invitation-v3
+AWS_COGNITO_USER_POOL_ID=ap-northeast-1_MD7zqiZga
+AWS_COGNITO_CLIENT_ID=7oa3l9iv02dr6vv6du8b0aqehm
+```
+
+#### apps/invitation-service/.env.develop
+
+```
+# AWS
+AWS_REGION=ap-northeast-1
+AWS_SNS_ENDPOINT=http://localhost:4566
+AWS_SNS_TOPIC_ARN=arn:aws:sns:ap-northeast-1:000000000000:invitation-topic
+```
+
+#### apps/invitation-service/.env.test
+
+```
+# AWS
+AWS_REGION=ap-northeast-1
+AWS_SNS_ENDPOINT=http://localhost:4566
+AWS_SNS_TOPIC_ARN=arn:aws:sns:ap-northeast-1:000000000000:invitation-topic
 ```
 
 ### ROOTの配下でコマンド

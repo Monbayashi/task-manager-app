@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { db, TASK_TABLE } from '../client';
 import {
   UserId,
   TeamId,
@@ -15,30 +14,12 @@ import {
   CounterItem,
 } from './types';
 import { QueryCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
-
-/**
-[アクセスパターン]: DB設計から貼り付け
-| #   | パターン                            | GSI          | 1 Query |
-| --- | ----------------------------------- | ------------ | ------- |
-| 1   | ユーザー取得                        | Primary      | Yes     |
-| 2   | チームの全ユーザー                  | Primary      | Yes     |
-| 3   | チーム情報                          | Primary      | Yes     |
-| 4   | ユーザーの全チーム                  | Primary      | Yes     |
-| 5   | 全タグ                              | Primary      | Yes     |
-| 6   | タスク詳細                          | Primary      | Yes     |
-| 7   | 初期表示（TODO_DOING + 開始日昇順） | Group2 Start | Yes     |
-| 8   | TODO のみ                           | Group1 Start | Yes     |
-| 9   | 単体タグ + TODO                     | Group1 Start | Yes     |
-| 10  | 複数タグ + TODO                     | Group1 Start | Yes     |
-| 11  | 全ステータス                        | All Start    | Yes     |
-| 12  | 開始日遅延（TODO）                  | Group1 Start | Yes     |
-| 13  | 開始日遅延 + 複数タグ               | Group1 Start | Yes     |
-| 14  | 完了遅延（DOING）                   | Group2 End   | Yes     |
-| 15  | 完了遅延 + 複数タグ                 | Group2 End   | Yes     |
-*/
+import { DynamoClientService } from '../dynamo-client.service';
 
 @Injectable()
 export class TaskQueryService {
+  constructor(private readonly dynamoClient: DynamoClientService) {}
+
   /**
    * 1. ユーザー取得 with 所属チーム
    * @param userId
@@ -48,9 +29,9 @@ export class TaskQueryService {
     user: UserItem | null;
     teams: UserTeamItem[];
   }> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new QueryCommand({
-        TableName: TASK_TABLE,
+        TableName: this.dynamoClient.taskTable,
         KeyConditionExpression: 'PK = :pk',
         ExpressionAttributeValues: { ':pk': `USER#${userId}` },
       })
@@ -69,9 +50,9 @@ export class TaskQueryService {
    * @returns
    */
   async getUser(userId: UserId): Promise<UserItem | null> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new GetCommand({
-        TableName: TASK_TABLE,
+        TableName: this.dynamoClient.taskTable,
         Key: { PK: `USER#${userId}`, SK: `USER#${userId}` },
       })
     );
@@ -84,9 +65,9 @@ export class TaskQueryService {
    * @returns
    */
   async getTeamMembers(teamId: TeamId): Promise<TeamUserItem[]> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new QueryCommand({
-        TableName: TASK_TABLE,
+        TableName: this.dynamoClient.taskTable,
         KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
         ExpressionAttributeValues: {
           ':pk': `TEAM#${teamId}`,
@@ -103,9 +84,9 @@ export class TaskQueryService {
    * @returns
    */
   async getTeam(teamId: TeamId): Promise<TeamItem | null> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new GetCommand({
-        TableName: TASK_TABLE,
+        TableName: this.dynamoClient.taskTable,
         Key: { PK: `TEAM#${teamId}`, SK: `TEAM#${teamId}` },
       })
     );
@@ -118,9 +99,9 @@ export class TaskQueryService {
    * @returns
    */
   async getUserTeams(userId: UserId): Promise<UserTeamItem[]> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new QueryCommand({
-        TableName: TASK_TABLE,
+        TableName: this.dynamoClient.taskTable,
         KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
         ExpressionAttributeValues: {
           ':pk': `USER#${userId}`,
@@ -137,9 +118,9 @@ export class TaskQueryService {
    * @returns
    */
   async getTeamTags(teamId: TeamId): Promise<TagItem[]> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new QueryCommand({
-        TableName: TASK_TABLE,
+        TableName: this.dynamoClient.taskTable,
         KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
         ExpressionAttributeValues: {
           ':pk': `TEAM#${teamId}`,
@@ -157,9 +138,9 @@ export class TaskQueryService {
    * @returns
    */
   async getTask(teamId: TeamId, taskId: TaskId): Promise<TaskItem | null> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new GetCommand({
-        TableName: TASK_TABLE,
+        TableName: this.dynamoClient.taskTable,
         Key: { PK: `TEAM#${teamId}`, SK: `TASK#${taskId}` },
       })
     );
@@ -239,9 +220,9 @@ export class TaskQueryService {
       tagRefs.forEach((id, i) => (expressionAttributeValues[`:tag${i}`] = `TAG#${id}`));
     }
 
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new QueryCommand({
-        TableName: TASK_TABLE,
+        TableName: this.dynamoClient.taskTable,
         IndexName: indexName,
         KeyConditionExpression: keyConditionExpression,
         FilterExpression: filterExpression,
@@ -265,9 +246,9 @@ export class TaskQueryService {
    * @returns
    */
   async getTeamCounters(teamId: TeamId): Promise<CounterItem[]> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new QueryCommand({
-        TableName: TASK_TABLE,
+        TableName: this.dynamoClient.taskTable,
         KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
         ExpressionAttributeValues: {
           ':pk': `TEAM#${teamId}`,

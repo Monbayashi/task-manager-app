@@ -1,19 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { db, INVITATION_TABLE } from '../client';
 import { InvitationItem, InvitationItemWithoutToken, InviteId } from './types';
 import { GetCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoClientService } from '../dynamo-client.service';
 
 @Injectable()
 export class InvitationQueryService {
+  constructor(private readonly dynamoClient: DynamoClientService) {}
+
   /**
    * 1. チームごとの招待一覧（新しい順）(tokenは取得しない)
    * @param teamId
    * @returns
    */
   async getInvitationsByTeam(teamId: string): Promise<InvitationItemWithoutToken[]> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new QueryCommand({
-        TableName: INVITATION_TABLE,
+        TableName: this.dynamoClient.invitationTable,
         KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
         ExpressionAttributeValues: {
           ':pk': `TEAM#${teamId}`,
@@ -33,9 +35,9 @@ export class InvitationQueryService {
    * @returns
    */
   async getInvitation(teamId: string, inviteId: InviteId): Promise<InvitationItemWithoutToken | null> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new GetCommand({
-        TableName: INVITATION_TABLE,
+        TableName: this.dynamoClient.invitationTable,
         Key: { PK: `TEAM#${teamId}`, SK: `INVITE#${inviteId}` },
         ProjectionExpression: 'PK, SK, email, user_role, createdAt, expiresAt, team_name',
       })
@@ -50,9 +52,9 @@ export class InvitationQueryService {
    * @returns
    */
   async getInvitationToken(teamId: string, inviteId: InviteId): Promise<InvitationItem | null> {
-    const result = await db.send(
+    const result = await this.dynamoClient.db.send(
       new GetCommand({
-        TableName: INVITATION_TABLE,
+        TableName: this.dynamoClient.invitationTable,
         Key: { PK: `TEAM#${teamId}`, SK: `INVITE#${inviteId}` },
       })
     );
