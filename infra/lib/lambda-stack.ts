@@ -29,9 +29,12 @@ export class LambdaStack extends cdk.Stack {
       code: lambda.Code.fromAsset(
         path.join(__dirname, "../../apps/invitation-service/dist")
       ),
+      memorySize: 256,
       environment: {
-        TABLE_NAME: props.table.tableName,
-        SNS_TOPIC_ARN: topic.topicArn,
+        NODE_ENV: "development",
+        AWS_SNS_TOPIC_ARN: topic.topicArn,
+        AWS_SNS_ENDPOINT: "http://host.docker.internal:4566",
+        INVITATION_LOG_LEVEL: "info",
         NODE_OPTIONS: "--enable-source-maps",
       },
     });

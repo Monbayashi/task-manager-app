@@ -2,12 +2,12 @@ import { Body, Controller, Get, Post, Req, UseGuards, UsePipes } from '@nestjs/c
 import type { Request } from 'express';
 import { CognitoAccessGuard } from 'src/common/guards/cognito-access.guard';
 import { UsersService } from './users.service';
-import { ZodValidationPipe } from 'nestjs-zod';
 import { ReqBodyUsersRegisterDTO, ReqBodyUsersUpdateDTO } from './users.dto';
 import { ResBodyUsersMeType, ResBodyUsersRegisterType, ResBodyUsersUpdateType } from '@repo/api-models/users';
+import { PrettyZodValidationPipe } from 'src/common/pipe/pretty-zod-validation.pipe';
 
-@Controller('users')
-@UsePipes(ZodValidationPipe)
+@Controller('api/users')
+@UsePipes(PrettyZodValidationPipe)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

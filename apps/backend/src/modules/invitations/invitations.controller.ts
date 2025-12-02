@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards, UsePipes } 
 import type { Request } from 'express';
 import { CognitoAccessGuard } from 'src/common/guards/cognito-access.guard';
 import { InvitationsService } from './invitations.service';
-import { ZodValidationPipe } from 'nestjs-zod';
 import {
   ReqParamInvitationsDto,
   ReqParamInvitationsRegisterDTO,
@@ -19,9 +18,10 @@ import {
   ResBodyInvitationsToTeamUserType,
   ResBodyInvitationsType,
 } from '@repo/api-models/invitations';
+import { PrettyZodValidationPipe } from 'src/common/pipe/pretty-zod-validation.pipe';
 
-@Controller('teams/:teamId/invitation')
-@UsePipes(ZodValidationPipe)
+@Controller('api/teams/:teamId/invitation')
+@UsePipes(PrettyZodValidationPipe)
 export class InvitationsController {
   constructor(private readonly invitationsService: InvitationsService) {}
 

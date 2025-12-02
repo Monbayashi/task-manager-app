@@ -2,12 +2,12 @@ import { Controller, Get, Query, Req, UseGuards, UsePipes } from '@nestjs/common
 import type { Request } from 'express';
 import { CognitoAccessGuard } from 'src/common/guards/cognito-access.guard';
 import { SummaryService } from './summary.service';
-import { ZodValidationPipe } from 'nestjs-zod';
 import { ReqQuerySummaryCountsDto } from './summary.dto';
 import { ResQuerySummaryCountsType } from '@repo/api-models/summary';
+import { PrettyZodValidationPipe } from 'src/common/pipe/pretty-zod-validation.pipe';
 
-@Controller('summary')
-@UsePipes(ZodValidationPipe)
+@Controller('api/summary')
+@UsePipes(PrettyZodValidationPipe)
 export class SummaryController {
   constructor(private readonly summaryService: SummaryService) {}
 

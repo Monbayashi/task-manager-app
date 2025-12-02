@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards, UsePipes } 
 import type { Request } from 'express';
 import { CognitoAccessGuard } from 'src/common/guards/cognito-access.guard';
 import { TagsService } from './tags.service';
-import { ZodValidationPipe } from 'nestjs-zod';
 import { ResBodyTagsDeleteType, ResBodyTagsRegisterType, ResBodyTagsType, ResBodyTagsUpdateType } from '@repo/api-models/tags';
 import {
   ReqBodyTagsRegisterDTO,
@@ -12,9 +11,10 @@ import {
   ReqParamTagsRegisterDTO,
   ReqParamTagsUpdateDTO,
 } from './tags.dto';
+import { PrettyZodValidationPipe } from 'src/common/pipe/pretty-zod-validation.pipe';
 
-@Controller('teams/:teamId/tags')
-@UsePipes(ZodValidationPipe)
+@Controller('api/teams/:teamId/tags')
+@UsePipes(PrettyZodValidationPipe)
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 

@@ -8,7 +8,7 @@ import { TypedConfigService } from './typed-config.service';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV === 'production' ? [] : [`.env.${process.env.NODE_ENV}`],
+      envFilePath: process.env.NODE_ENV === 'test' ? [`.env.${process.env.NODE_ENV}`] : [],
       validate: (config) => {
         const parsed = envSchema.safeParse(config);
         if (!parsed.success) {
