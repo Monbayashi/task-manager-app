@@ -16,9 +16,11 @@ export const signupFormSchema = z
 /** サインアップForm Type */
 export type SignupFormType = z.infer<typeof signupFormSchema>;
 
-/** サインアップ検証Form Schema */
+/** サインアップ検証Form Schema */ //認証コードを入力してください
 export const confirmSignupFormSchema = z.object({
-  code: z.string(),
+  code: z
+    .string({ error: (issue) => (issue.input === undefined ? '認証コードは必須項目です' : '認証コードは文字列で入力してください') })
+    .regex(/^\d{6}$/, '認証コードは6桁の数字で入力してください'),
 });
 
 /** サインアップ検証Form Type */
