@@ -15,6 +15,7 @@ import {
 } from './types';
 import { QueryCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
 import { DynamoClientService } from '../dynamo-client.service';
+import { handleDynamoError } from '../handle-dynamo-error';
 
 @Injectable()
 export class TaskQueryService {
@@ -29,19 +30,22 @@ export class TaskQueryService {
     user: UserItem | null;
     teams: UserTeamItem[];
   }> {
-    const result = await this.dynamoClient.db.send(
-      new QueryCommand({
-        TableName: this.dynamoClient.taskTable,
-        KeyConditionExpression: 'PK = :pk',
-        ExpressionAttributeValues: { ':pk': `USER#${userId}` },
-      })
-    );
+    const getCommand = new QueryCommand({
+      TableName: this.dynamoClient.taskTable,
+      KeyConditionExpression: 'PK = :pk',
+      ExpressionAttributeValues: { ':pk': `USER#${userId}` },
+    });
 
-    const items = (result.Items ?? []) as AnyItem[];
-    return {
-      user: items.find((i): i is UserItem => i.type === 'user') ?? null,
-      teams: items.filter((i): i is UserTeamItem => i.type === 'user_team'),
-    };
+    try {
+      const result = await this.dynamoClient.db.send(getCommand);
+      const items = (result.Items ?? []) as AnyItem[];
+      return {
+        user: items.find((i): i is UserItem => i.type === 'user') ?? null,
+        teams: items.filter((i): i is UserTeamItem => i.type === 'user_team'),
+      };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -50,13 +54,17 @@ export class TaskQueryService {
    * @returns
    */
   async getUser(userId: UserId): Promise<UserItem | null> {
-    const result = await this.dynamoClient.db.send(
-      new GetCommand({
-        TableName: this.dynamoClient.taskTable,
-        Key: { PK: `USER#${userId}`, SK: `USER#${userId}` },
-      })
-    );
-    return (result.Item as UserItem) ?? null;
+    const getCommand = new GetCommand({
+      TableName: this.dynamoClient.taskTable,
+      Key: { PK: `USER#${userId}`, SK: `USER#${userId}` },
+    });
+
+    try {
+      const result = await this.dynamoClient.db.send(getCommand);
+      return (result.Item as UserItem) ?? null;
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -65,17 +73,21 @@ export class TaskQueryService {
    * @returns
    */
   async getTeamMembers(teamId: TeamId): Promise<TeamUserItem[]> {
-    const result = await this.dynamoClient.db.send(
-      new QueryCommand({
-        TableName: this.dynamoClient.taskTable,
-        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
-        ExpressionAttributeValues: {
-          ':pk': `TEAM#${teamId}`,
-          ':prefix': 'USER#',
-        },
-      })
-    );
-    return (result.Items ?? []) as TeamUserItem[];
+    const getCommand = new QueryCommand({
+      TableName: this.dynamoClient.taskTable,
+      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `TEAM#${teamId}`,
+        ':prefix': 'USER#',
+      },
+    });
+
+    try {
+      const result = await this.dynamoClient.db.send(getCommand);
+      return (result.Items ?? []) as TeamUserItem[];
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -84,13 +96,17 @@ export class TaskQueryService {
    * @returns
    */
   async getTeam(teamId: TeamId): Promise<TeamItem | null> {
-    const result = await this.dynamoClient.db.send(
-      new GetCommand({
-        TableName: this.dynamoClient.taskTable,
-        Key: { PK: `TEAM#${teamId}`, SK: `TEAM#${teamId}` },
-      })
-    );
-    return (result.Item as TeamItem) ?? null;
+    const getCommand = new GetCommand({
+      TableName: this.dynamoClient.taskTable,
+      Key: { PK: `TEAM#${teamId}`, SK: `TEAM#${teamId}` },
+    });
+
+    try {
+      const result = await this.dynamoClient.db.send(getCommand);
+      return (result.Item as TeamItem) ?? null;
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -99,17 +115,21 @@ export class TaskQueryService {
    * @returns
    */
   async getUserTeams(userId: UserId): Promise<UserTeamItem[]> {
-    const result = await this.dynamoClient.db.send(
-      new QueryCommand({
-        TableName: this.dynamoClient.taskTable,
-        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
-        ExpressionAttributeValues: {
-          ':pk': `USER#${userId}`,
-          ':prefix': 'TEAM#',
-        },
-      })
-    );
-    return (result.Items ?? []) as UserTeamItem[];
+    const getCommand = new QueryCommand({
+      TableName: this.dynamoClient.taskTable,
+      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `USER#${userId}`,
+        ':prefix': 'TEAM#',
+      },
+    });
+
+    try {
+      const result = await this.dynamoClient.db.send(getCommand);
+      return (result.Items ?? []) as UserTeamItem[];
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -118,17 +138,21 @@ export class TaskQueryService {
    * @returns
    */
   async getTeamTags(teamId: TeamId): Promise<TagItem[]> {
-    const result = await this.dynamoClient.db.send(
-      new QueryCommand({
-        TableName: this.dynamoClient.taskTable,
-        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
-        ExpressionAttributeValues: {
-          ':pk': `TEAM#${teamId}`,
-          ':prefix': 'TAG#',
-        },
-      })
-    );
-    return (result.Items ?? []) as TagItem[];
+    const getCommand = new QueryCommand({
+      TableName: this.dynamoClient.taskTable,
+      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `TEAM#${teamId}`,
+        ':prefix': 'TAG#',
+      },
+    });
+
+    try {
+      const result = await this.dynamoClient.db.send(getCommand);
+      return (result.Items ?? []) as TagItem[];
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -138,13 +162,17 @@ export class TaskQueryService {
    * @returns
    */
   async getTask(teamId: TeamId, taskId: TaskId): Promise<TaskItem | null> {
-    const result = await this.dynamoClient.db.send(
-      new GetCommand({
-        TableName: this.dynamoClient.taskTable,
-        Key: { PK: `TEAM#${teamId}`, SK: `TASK#${taskId}` },
-      })
-    );
-    return (result.Item as TaskItem) ?? null;
+    const getCommand = new GetCommand({
+      TableName: this.dynamoClient.taskTable,
+      Key: { PK: `TEAM#${teamId}`, SK: `TASK#${taskId}` },
+    });
+
+    try {
+      const result = await this.dynamoClient.db.send(getCommand);
+      return (result.Item as TaskItem) ?? null;
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   //--------------------------------------------------------------------------------------------------
@@ -220,24 +248,28 @@ export class TaskQueryService {
       tagRefs.forEach((id, i) => (expressionAttributeValues[`:tag${i}`] = `TAG#${id}`));
     }
 
-    const result = await this.dynamoClient.db.send(
-      new QueryCommand({
-        TableName: this.dynamoClient.taskTable,
-        IndexName: indexName,
-        KeyConditionExpression: keyConditionExpression,
-        FilterExpression: filterExpression,
-        ExpressionAttributeValues: expressionAttributeValues,
-        ProjectionExpression: 'PK, SK, team_task_title, team_task_status, team_task_startTime, team_task_endTime, team_task_tagRef',
-        ScanIndexForward: sort === 'asc',
-        // ページング
-        Limit: 10,
-        ExclusiveStartKey: nextToken && JSON.parse(nextToken),
-      })
-    );
-    return {
-      tasks: (result.Items ?? []) as TaskItemList,
-      nextToken: result.LastEvaluatedKey ? JSON.stringify(result.LastEvaluatedKey) : null,
-    };
+    const getCommand = new QueryCommand({
+      TableName: this.dynamoClient.taskTable,
+      IndexName: indexName,
+      KeyConditionExpression: keyConditionExpression,
+      FilterExpression: filterExpression,
+      ExpressionAttributeValues: expressionAttributeValues,
+      ProjectionExpression: 'PK, SK, team_task_title, team_task_status, team_task_startTime, team_task_endTime, team_task_tagRef',
+      ScanIndexForward: sort === 'asc',
+      // ページング
+      Limit: 10,
+      ExclusiveStartKey: nextToken && JSON.parse(nextToken),
+    });
+
+    try {
+      const result = await this.dynamoClient.db.send(getCommand);
+      return {
+        tasks: (result.Items ?? []) as TaskItemList,
+        nextToken: result.LastEvaluatedKey ? JSON.stringify(result.LastEvaluatedKey) : null,
+      };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -246,16 +278,20 @@ export class TaskQueryService {
    * @returns
    */
   async getTeamCounters(teamId: TeamId): Promise<CounterItem[]> {
-    const result = await this.dynamoClient.db.send(
-      new QueryCommand({
-        TableName: this.dynamoClient.taskTable,
-        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
-        ExpressionAttributeValues: {
-          ':pk': `TEAM#${teamId}`,
-          ':prefix': 'COUNTER#',
-        },
-      })
-    );
-    return (result.Items ?? []) as CounterItem[];
+    const getCommand = new QueryCommand({
+      TableName: this.dynamoClient.taskTable,
+      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': `TEAM#${teamId}`,
+        ':prefix': 'COUNTER#',
+      },
+    });
+
+    try {
+      const result = await this.dynamoClient.db.send(getCommand);
+      return (result.Items ?? []) as CounterItem[];
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 }

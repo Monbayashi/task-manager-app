@@ -9,13 +9,13 @@ export const PrettyZodValidationPipe = createZodValidationPipe({
   createValidationException: (error) => {
     if (error instanceof ZodError) {
       return new BadRequestException({
-        status: 400,
+        statusCode: 400,
         message: '入力値が不正です',
         errors: flattenError(error).fieldErrors,
       });
     } else {
       return new BadRequestException({
-        status: 400,
+        statusCode: 400,
         message: '入力値が不正です',
         errors: { unkown: ['予期せぬエラーが発生しました'] },
       });

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DynamoDBStreamEvent } from 'aws-lambda';
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
-import { TypedConfigService } from 'src/common/config/typed-config.service';
+import { TypedConfigService } from '../common/config/typed-config.service';
 
 @Injectable()
 export class InvitationService {

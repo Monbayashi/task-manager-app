@@ -4,6 +4,7 @@ import { v7 as uuid } from 'uuid';
 import { TagItem, TaskItem, TaskStatus, TeamUserItem, UserRole, UserTeamItem } from './types';
 import { addDays } from 'date-fns';
 import { DynamoClientService } from '../dynamo-client.service';
+import { handleDynamoError } from '../handle-dynamo-error';
 
 @Injectable()
 export class TaskCommandService {
@@ -18,69 +19,73 @@ export class TaskCommandService {
     const { userId, email, userName, teamName, role } = params;
     const now = new Date().toISOString();
     const teamId = uuid();
-    await this.dynamoClient.db.send(
-      new TransactWriteCommand({
-        TransactItems: [
-          // 1. ユーザー作成
-          {
-            Put: {
-              TableName: this.dynamoClient.taskTable,
-              Item: {
-                PK: `USER#${userId}`,
-                SK: `USER#${userId}`,
-                type: 'user',
-                user_email: email,
-                user_name: userName,
-                user_createdAt: now,
-              },
-              ConditionExpression: 'attribute_not_exists(PK)', // 重複防止
+    const transactWriteCommand = new TransactWriteCommand({
+      TransactItems: [
+        // 1. ユーザー作成
+        {
+          Put: {
+            TableName: this.dynamoClient.taskTable,
+            Item: {
+              PK: `USER#${userId}`,
+              SK: `USER#${userId}`,
+              type: 'user',
+              user_email: email,
+              user_name: userName,
+              user_createdAt: now,
+            },
+            ConditionExpression: 'attribute_not_exists(PK)', // 重複防止
+          },
+        },
+        // 2. チーム作成
+        {
+          Put: {
+            TableName: this.dynamoClient.taskTable,
+            Item: {
+              PK: `TEAM#${teamId}`,
+              SK: `TEAM#${teamId}`,
+              type: 'team',
+              team_name: teamName,
+              team_discription: '',
             },
           },
-          // 2. チーム作成
-          {
-            Put: {
-              TableName: this.dynamoClient.taskTable,
-              Item: {
-                PK: `TEAM#${teamId}`,
-                SK: `TEAM#${teamId}`,
-                type: 'team',
-                team_name: teamName,
-                team_discription: '',
-              },
+        },
+        // 3. ユーザーのチーム所属
+        {
+          Put: {
+            TableName: this.dynamoClient.taskTable,
+            Item: {
+              PK: `USER#${userId}`,
+              SK: `TEAM#${teamId}`,
+              type: 'user_team',
+              user_team_role: role,
+              user_team_joinedAt: now,
+              team_name: teamName,
             },
           },
-          // 3. ユーザーのチーム所属
-          {
-            Put: {
-              TableName: this.dynamoClient.taskTable,
-              Item: {
-                PK: `USER#${userId}`,
-                SK: `TEAM#${teamId}`,
-                type: 'user_team',
-                user_team_role: role,
-                user_team_joinedAt: now,
-                team_name: teamName,
-              },
+        },
+        // 3. チームのメンバー追加
+        {
+          Put: {
+            TableName: this.dynamoClient.taskTable,
+            Item: {
+              PK: `TEAM#${teamId}`,
+              SK: `USER#${userId}`,
+              type: 'team_user',
+              user_team_role: role,
+              user_team_joinedAt: now,
+              user_name: userName,
             },
           },
-          // 3. チームのメンバー追加
-          {
-            Put: {
-              TableName: this.dynamoClient.taskTable,
-              Item: {
-                PK: `TEAM#${teamId}`,
-                SK: `USER#${userId}`,
-                type: 'team_user',
-                user_team_role: role,
-                user_team_joinedAt: now,
-                user_name: userName,
-              },
-            },
-          },
-        ],
-      })
-    );
-    return { userId, teamId };
+        },
+      ],
+    });
+
+    try {
+      await this.dynamoClient.db.send(transactWriteCommand);
+      return { userId, teamId };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -92,54 +97,58 @@ export class TaskCommandService {
     const { userId, userName, teamName, role } = params;
     const now = new Date().toISOString();
     const teamId = uuid();
-    await this.dynamoClient.db.send(
-      new TransactWriteCommand({
-        TransactItems: [
-          // 1. チーム作成
-          {
-            Put: {
-              TableName: this.dynamoClient.taskTable,
-              Item: {
-                PK: `TEAM#${teamId}`,
-                SK: `TEAM#${teamId}`,
-                type: 'team',
-                team_name: teamName,
-                team_discription: '',
-              },
+    const transactWriteCommand = new TransactWriteCommand({
+      TransactItems: [
+        // 1. チーム作成
+        {
+          Put: {
+            TableName: this.dynamoClient.taskTable,
+            Item: {
+              PK: `TEAM#${teamId}`,
+              SK: `TEAM#${teamId}`,
+              type: 'team',
+              team_name: teamName,
+              team_discription: '',
             },
           },
-          // 2. ユーザーのチーム所属
-          {
-            Put: {
-              TableName: this.dynamoClient.taskTable,
-              Item: {
-                PK: `USER#${userId}`,
-                SK: `TEAM#${teamId}`,
-                type: 'user_team',
-                user_team_role: role,
-                user_team_joinedAt: now,
-                team_name: teamName,
-              },
+        },
+        // 2. ユーザーのチーム所属
+        {
+          Put: {
+            TableName: this.dynamoClient.taskTable,
+            Item: {
+              PK: `USER#${userId}`,
+              SK: `TEAM#${teamId}`,
+              type: 'user_team',
+              user_team_role: role,
+              user_team_joinedAt: now,
+              team_name: teamName,
             },
           },
-          // 3. チームのメンバー追加
-          {
-            Put: {
-              TableName: this.dynamoClient.taskTable,
-              Item: {
-                PK: `TEAM#${teamId}`,
-                SK: `USER#${userId}`,
-                type: 'team_user',
-                user_team_role: role,
-                user_team_joinedAt: now,
-                user_name: userName,
-              },
+        },
+        // 3. チームのメンバー追加
+        {
+          Put: {
+            TableName: this.dynamoClient.taskTable,
+            Item: {
+              PK: `TEAM#${teamId}`,
+              SK: `USER#${userId}`,
+              type: 'team_user',
+              user_team_role: role,
+              user_team_joinedAt: now,
+              user_name: userName,
             },
           },
-        ],
-      })
-    );
-    return { teamId, teamName, role };
+        },
+      ],
+    });
+
+    try {
+      await this.dynamoClient.db.send(transactWriteCommand);
+      return { teamId, teamName, role };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -157,119 +166,131 @@ export class TaskCommandService {
   }) {
     const { userId, teamId, inviteId, userName, teamName, role } = params;
     const now = new Date().toISOString();
-    await this.dynamoClient.db.send(
-      new TransactWriteCommand({
-        TransactItems: [
-          // 1. チーム招待の削除
-          {
-            Delete: {
-              TableName: this.dynamoClient.invitationTable,
-              Key: {
-                PK: `TEAM#${teamId}`,
-                SK: `INVITE#${inviteId}`,
-              },
+    const transactWriteCommand = new TransactWriteCommand({
+      TransactItems: [
+        // 1. チーム招待の削除
+        {
+          Delete: {
+            TableName: this.dynamoClient.invitationTable,
+            Key: {
+              PK: `TEAM#${teamId}`,
+              SK: `INVITE#${inviteId}`,
             },
           },
-          // 2. ユーザーのチーム所属
-          {
-            Put: {
-              TableName: this.dynamoClient.taskTable,
-              Item: {
-                PK: `USER#${userId}`,
-                SK: `TEAM#${teamId}`,
-                type: 'user_team',
-                user_team_role: role,
-                user_team_joinedAt: now,
-                team_name: teamName,
-              },
+        },
+        // 2. ユーザーのチーム所属
+        {
+          Put: {
+            TableName: this.dynamoClient.taskTable,
+            Item: {
+              PK: `USER#${userId}`,
+              SK: `TEAM#${teamId}`,
+              type: 'user_team',
+              user_team_role: role,
+              user_team_joinedAt: now,
+              team_name: teamName,
             },
           },
-          // 3. チームのメンバー追加
-          {
-            Put: {
-              TableName: this.dynamoClient.taskTable,
-              Item: {
-                PK: `TEAM#${teamId}`,
-                SK: `USER#${userId}`,
-                type: 'team_user',
-                user_team_role: role,
-                user_team_joinedAt: now,
-                user_name: userName,
-              },
+        },
+        // 3. チームのメンバー追加
+        {
+          Put: {
+            TableName: this.dynamoClient.taskTable,
+            Item: {
+              PK: `TEAM#${teamId}`,
+              SK: `USER#${userId}`,
+              type: 'team_user',
+              user_team_role: role,
+              user_team_joinedAt: now,
+              user_name: userName,
             },
           },
-        ],
-      })
-    );
-    return { userId, teamId, inviteId };
+        },
+      ],
+    });
+
+    try {
+      await this.dynamoClient.db.send(transactWriteCommand);
+      return { userId, teamId, inviteId };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /** チームメンバーの更新 */
   async updateTeamMember(params: { userId: string; teamId: string; role: UserRole }) {
     const { userId, teamId, role } = params;
-    await this.dynamoClient.db.send(
-      new TransactWriteCommand({
-        TransactItems: [
-          // 1. ユーザーのチーム所属 更新
-          {
-            Update: {
-              TableName: this.dynamoClient.taskTable,
-              Key: {
-                PK: `USER#${userId}`,
-                SK: `TEAM#${teamId}`,
-              },
-              UpdateExpression: 'SET user_team_role = :role',
-              ExpressionAttributeValues: { ':role': role },
+    const transactWriteCommand = new TransactWriteCommand({
+      TransactItems: [
+        // 1. ユーザーのチーム所属 更新
+        {
+          Update: {
+            TableName: this.dynamoClient.taskTable,
+            Key: {
+              PK: `USER#${userId}`,
+              SK: `TEAM#${teamId}`,
             },
+            UpdateExpression: 'SET user_team_role = :role',
+            ExpressionAttributeValues: { ':role': role },
           },
-          // 2. チームのメンバー追加 更新
-          {
-            Update: {
-              TableName: this.dynamoClient.taskTable,
-              Key: {
-                PK: `TEAM#${teamId}`,
-                SK: `USER#${userId}`,
-              },
-              UpdateExpression: 'SET user_team_role = :role',
-              ExpressionAttributeValues: { ':role': role },
+        },
+        // 2. チームのメンバー追加 更新
+        {
+          Update: {
+            TableName: this.dynamoClient.taskTable,
+            Key: {
+              PK: `TEAM#${teamId}`,
+              SK: `USER#${userId}`,
             },
+            UpdateExpression: 'SET user_team_role = :role',
+            ExpressionAttributeValues: { ':role': role },
           },
-        ],
-      })
-    );
-    return { userId, teamId, role };
+        },
+      ],
+    });
+
+    try {
+      await this.dynamoClient.db.send(transactWriteCommand);
+      return { userId, teamId, role };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /** チームメンバーの削除 */
   async deleteTeamMember(params: { userId: string; teamId: string }) {
     const { userId, teamId } = params;
-    await this.dynamoClient.db.send(
-      new TransactWriteCommand({
-        TransactItems: [
-          // 1. ユーザーのチーム所属 削除
-          {
-            Delete: {
-              TableName: this.dynamoClient.taskTable,
-              Key: {
-                PK: `USER#${userId}`,
-                SK: `TEAM#${teamId}`,
-              },
+    const transactWriteCommand = new TransactWriteCommand({
+      TransactItems: [
+        // 1. ユーザーのチーム所属 削除
+        {
+          Delete: {
+            TableName: this.dynamoClient.taskTable,
+            Key: {
+              PK: `USER#${userId}`,
+              SK: `TEAM#${teamId}`,
             },
           },
-          // 2. チームのメンバー追加 削除
-          {
-            Delete: {
-              TableName: this.dynamoClient.taskTable,
-              Key: {
-                PK: `TEAM#${teamId}`,
-                SK: `USER#${userId}`,
-              },
+        },
+        // 2. チームのメンバー追加 削除
+        {
+          Delete: {
+            TableName: this.dynamoClient.taskTable,
+            Key: {
+              PK: `TEAM#${teamId}`,
+              SK: `USER#${userId}`,
             },
           },
-        ],
-      })
-    );
-    return { userId, teamId };
+        },
+      ],
+    });
+
+    try {
+      await this.dynamoClient.db.send(transactWriteCommand);
+      return { userId, teamId };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -315,8 +336,12 @@ export class TaskCommandService {
       throw new Error('所属チームが多すぎます（25超）。バッチ処理が必要です');
     }
 
-    await this.dynamoClient.db.send(new TransactWriteCommand({ TransactItems: transactItems }));
-    return transactItems.length;
+    try {
+      await this.dynamoClient.db.send(new TransactWriteCommand({ TransactItems: transactItems }));
+      return transactItems.length;
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -361,8 +386,12 @@ export class TaskCommandService {
       throw new Error('メンバーが多すぎます（25超）。バッチ処理が必要です');
     }
 
-    await this.dynamoClient.db.send(new TransactWriteCommand({ TransactItems: transactItems }));
-    return transactItems.length;
+    try {
+      await this.dynamoClient.db.send(new TransactWriteCommand({ TransactItems: transactItems }));
+      return transactItems.length;
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -373,25 +402,29 @@ export class TaskCommandService {
   async createTag(params: { teamId: string; tagName: string; tagColor: { color: string; backgroundColor: string } }): Promise<TagItem> {
     const { teamId, tagName, tagColor } = params;
     const tagId = uuid();
-    await this.dynamoClient.db.send(
-      new PutCommand({
-        TableName: this.dynamoClient.taskTable,
-        Item: {
-          PK: `TEAM#${teamId}`,
-          SK: `TAG#${tagId}`,
-          type: 'team_tag',
-          team_tag_name: tagName,
-          team_tag_color: tagColor,
-        },
-      })
-    );
-    return {
-      PK: `TEAM#${teamId}`,
-      SK: `TAG#${tagId}`,
-      type: 'team_tag',
-      team_tag_name: tagName,
-      team_tag_color: tagColor,
-    };
+    const putCommand = new PutCommand({
+      TableName: this.dynamoClient.taskTable,
+      Item: {
+        PK: `TEAM#${teamId}`,
+        SK: `TAG#${tagId}`,
+        type: 'team_tag',
+        team_tag_name: tagName,
+        team_tag_color: tagColor,
+      },
+    });
+
+    try {
+      await this.dynamoClient.db.send(putCommand);
+      return {
+        PK: `TEAM#${teamId}`,
+        SK: `TAG#${tagId}`,
+        type: 'team_tag',
+        team_tag_name: tagName,
+        team_tag_color: tagColor,
+      };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -406,27 +439,31 @@ export class TaskCommandService {
     tagColor: { color: string; backgroundColor: string };
   }): Promise<TagItem> {
     const { teamId, tagId, tagName, tagColor } = params;
-    await this.dynamoClient.db.send(
-      new UpdateCommand({
-        TableName: this.dynamoClient.taskTable,
-        Key: {
-          PK: `TEAM#${teamId}`,
-          SK: `TAG#${tagId}`,
-        },
-        UpdateExpression: 'set team_tag_name = :tagName, team_tag_color = :tagColor',
-        ExpressionAttributeValues: {
-          ':tagName': tagName,
-          ':tagColor': tagColor,
-        },
-      })
-    );
-    return {
-      PK: `TEAM#${teamId}`,
-      SK: `TAG#${tagId}`,
-      type: 'team_tag',
-      team_tag_name: tagName,
-      team_tag_color: tagColor,
-    };
+    const updateCommand = new UpdateCommand({
+      TableName: this.dynamoClient.taskTable,
+      Key: {
+        PK: `TEAM#${teamId}`,
+        SK: `TAG#${tagId}`,
+      },
+      UpdateExpression: 'set team_tag_name = :tagName, team_tag_color = :tagColor',
+      ExpressionAttributeValues: {
+        ':tagName': tagName,
+        ':tagColor': tagColor,
+      },
+    });
+
+    try {
+      await this.dynamoClient.db.send(updateCommand);
+      return {
+        PK: `TEAM#${teamId}`,
+        SK: `TAG#${tagId}`,
+        type: 'team_tag',
+        team_tag_name: tagName,
+        team_tag_color: tagColor,
+      };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -436,16 +473,20 @@ export class TaskCommandService {
    */
   async deleteTag(params: { teamId: string; tagId: string }) {
     const { teamId, tagId } = params;
-    await this.dynamoClient.db.send(
-      new DeleteCommand({
-        TableName: this.dynamoClient.taskTable,
-        Key: {
-          PK: `TEAM#${teamId}`,
-          SK: `TAG#${tagId}`,
-        },
-      })
-    );
-    return { PK: `TEAM#${teamId}`, SK: `TAG#${tagId}` };
+    const deleteCommand = new DeleteCommand({
+      TableName: this.dynamoClient.taskTable,
+      Key: {
+        PK: `TEAM#${teamId}`,
+        SK: `TAG#${tagId}`,
+      },
+    });
+
+    try {
+      await this.dynamoClient.db.send(deleteCommand);
+      return { PK: `TEAM#${teamId}`, SK: `TAG#${tagId}` };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -505,27 +546,28 @@ export class TaskCommandService {
     const counterUpdates = this.updateCounters(teamId, undefined, status);
 
     // トランザクション
-    await this.dynamoClient.db.send(
-      new TransactWriteCommand({
-        TransactItems: [{ Put: putCommand.input }, ...counterUpdates],
-      })
-    );
-    return {
-      PK: `TEAM#${teamId}`,
-      SK: `TASK#${taskId}`,
-      type: 'task',
-      team_task_title: title,
-      team_task_discription: discription,
-      team_task_status: status,
-      team_task_startTime: startTime,
-      team_task_endTime: endTime,
-      team_task_tagRef: tagList,
-      status_group1: group1,
-      status_group2: group2,
-      status_group3: group3,
-      start_sort_sk: `START#${startTime}`,
-      end_sort_sk: `END#${endTime}`,
-    };
+    const transactWriteCommand = new TransactWriteCommand({ TransactItems: [{ Put: putCommand.input }, ...counterUpdates] });
+    try {
+      await this.dynamoClient.db.send(transactWriteCommand);
+      return {
+        PK: `TEAM#${teamId}`,
+        SK: `TASK#${taskId}`,
+        type: 'task',
+        team_task_title: title,
+        team_task_discription: discription,
+        team_task_status: status,
+        team_task_startTime: startTime,
+        team_task_endTime: endTime,
+        team_task_tagRef: tagList,
+        status_group1: group1,
+        status_group2: group2,
+        status_group3: group3,
+        start_sort_sk: `START#${startTime}`,
+        end_sort_sk: `END#${endTime}`,
+      };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -634,33 +676,32 @@ export class TaskCommandService {
       }
     }
 
-    await this.dynamoClient.db.send(
-      new TransactWriteCommand({
-        TransactItems: [
-          {
-            Update: {
-              TableName: this.dynamoClient.taskTable,
-              Key: {
-                PK: `TEAM#${teamId}`,
-                SK: `TASK#${taskId}`,
-              },
-              UpdateExpression: updateExpression,
-              ExpressionAttributeValues: expressionAttributeValues,
-              // ReturnValues: 'ALL_NEW',
-            },
+    const transactWriteCommand = new TransactWriteCommand({
+      TransactItems: [
+        {
+          Update: {
+            TableName: this.dynamoClient.taskTable,
+            Key: { PK: `TEAM#${teamId}`, SK: `TASK#${taskId}` },
+            UpdateExpression: updateExpression,
+            ExpressionAttributeValues: expressionAttributeValues,
+            // ReturnValues: 'ALL_NEW',
           },
-          ...counterUpdates,
-        ],
-      })
-    );
-    // 更新後の最新タスクを取得して返す処理
-    const result = await this.dynamoClient.db.send(
-      new GetCommand({
-        TableName: this.dynamoClient.taskTable,
-        Key: { PK: `TEAM#${teamId}`, SK: `TASK#${taskId}` },
-      })
-    );
-    return result.Item as TaskItem;
+        },
+        ...counterUpdates,
+      ],
+    });
+    const getCommand = new GetCommand({
+      TableName: this.dynamoClient.taskTable,
+      Key: { PK: `TEAM#${teamId}`, SK: `TASK#${taskId}` },
+    });
+    try {
+      await this.dynamoClient.db.send(transactWriteCommand);
+      // 更新後の最新タスクを取得して返す処理
+      const result = await this.dynamoClient.db.send(getCommand);
+      return result.Item as TaskItem;
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -679,15 +720,16 @@ export class TaskCommandService {
     // カウンター更新 + 初回対策
     const counterUpdates = this.updateCounters(teamId, oldStatus, undefined, true);
 
-    await this.dynamoClient.db.send(
-      new TransactWriteCommand({
-        TransactItems: [
-          { Delete: { TableName: this.dynamoClient.taskTable, Key: { PK: `TEAM#${teamId}`, SK: `TASK#${taskId}` } } },
-          ...counterUpdates,
-        ],
-      })
-    );
-    return { PK: `TEAM#${teamId}`, SK: `TASK#${taskId}` };
+    const transactWriteCommand = new TransactWriteCommand({
+      TransactItems: [{ Delete: { TableName: this.dynamoClient.taskTable, Key: { PK: `TEAM#${teamId}`, SK: `TASK#${taskId}` } } }, ...counterUpdates],
+    });
+
+    try {
+      await this.dynamoClient.db.send(transactWriteCommand);
+      return { PK: `TEAM#${teamId}`, SK: `TASK#${taskId}` };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**

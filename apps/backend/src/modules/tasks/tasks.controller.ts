@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards, UsePipes } from '@nestjs/common';
 import type { Request } from 'express';
-import { CognitoAccessGuard } from 'src/common/guards/cognito-access.guard';
+import { CognitoAccessGuard } from '../../common/guards/cognito-access.guard';
 import { TasksService } from './tasks.service';
 import {
   ResBodyTasksDeleteType,
@@ -19,7 +19,7 @@ import {
   ReqParamTasksUpdateDTO,
   ReqQueryTasksDto,
 } from './tasks.dto';
-import { PrettyZodValidationPipe } from 'src/common/pipe/pretty-zod-validation.pipe';
+import { PrettyZodValidationPipe } from '../../common/pipe/pretty-zod-validation.pipe';
 
 @Controller('api/teams/:teamId/tasks')
 @UsePipes(PrettyZodValidationPipe)
@@ -55,7 +55,7 @@ export class TasksController {
   }
 
   /** タスク更新 */
-  @Post(':taskId')
+  @Put(':taskId')
   @UseGuards(CognitoAccessGuard)
   async postUpdate(
     @Req() req: Request,

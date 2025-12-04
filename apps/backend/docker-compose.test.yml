@@ -1,0 +1,16 @@
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack-backend-test
+    ports:
+      - '4567:4566' # 開発用4566と被らないように設定
+    environment:
+      - SERVICES=dynamodb
+      - DEBUG=0
+      - DYNAMODB_SHARE_DB=1
+      - PERSISTENCE=0
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
+      interval: 3s
+      timeout: 5s
+      retries: 40

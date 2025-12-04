@@ -13,5 +13,5 @@ export const fetcherTeamsUsers = async (url: string): Promise<ResBodyTeamsUsersT
  * チームユーザ一覧
  */
 export const useTeamUsers = (teamId: string | null) => {
-  return useSWR<ResBodyTeamsUsersType>(teamId ? `/api/teams/${teamId}/users` : null, fetcherTeamsUsers);
+  return useSWR<ResBodyTeamsUsersType>(teamId ? `/api/teams/${teamId}/team-member` : null, fetcherTeamsUsers);
 };

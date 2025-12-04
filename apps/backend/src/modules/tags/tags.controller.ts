@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards, UsePipes } from '@nestjs/common';
 import type { Request } from 'express';
-import { CognitoAccessGuard } from 'src/common/guards/cognito-access.guard';
+import { CognitoAccessGuard } from '../../common/guards/cognito-access.guard';
 import { TagsService } from './tags.service';
 import { ResBodyTagsDeleteType, ResBodyTagsRegisterType, ResBodyTagsType, ResBodyTagsUpdateType } from '@repo/api-models/tags';
 import {
@@ -11,7 +11,7 @@ import {
   ReqParamTagsRegisterDTO,
   ReqParamTagsUpdateDTO,
 } from './tags.dto';
-import { PrettyZodValidationPipe } from 'src/common/pipe/pretty-zod-validation.pipe';
+import { PrettyZodValidationPipe } from '../../common/pipe/pretty-zod-validation.pipe';
 
 @Controller('api/teams/:teamId/tags')
 @UsePipes(PrettyZodValidationPipe)
@@ -39,9 +39,9 @@ export class TagsController {
   }
 
   /** タグ更新 */
-  @Post(':tagId')
+  @Put(':tagId')
   @UseGuards(CognitoAccessGuard)
-  async postUpdate(@Req() req: Request, @Param() param: ReqParamTagsUpdateDTO, @Body() body: ReqBodyTagsUpdateDTO): Promise<ResBodyTagsUpdateType> {
+  async putUpdate(@Req() req: Request, @Param() param: ReqParamTagsUpdateDTO, @Body() body: ReqBodyTagsUpdateDTO): Promise<ResBodyTagsUpdateType> {
     const userId = req.user ? (req.user['sub'] as string) : '';
     return await this.tagsService.updateTag(userId, param, body);
   }

@@ -6,8 +6,14 @@ export const tagName = z
   .min(1, 'タグー名は1文字以上です')
   .max(8, 'タグ名は8文字までです');
 export const tagColor = z.object({
-  color: z.string(),
-  backgroundColor: z.string(),
+  color: z
+    .string({ error: (issue) => (issue.input === undefined ? 'タグカラーは必須項目です' : 'タグカラーは文字列で入力してください') })
+    .min(1, 'タグカラーは1文字以上です'),
+  backgroundColor: z
+    .string({
+      error: (issue) => (issue.input === undefined ? 'タグバックエンドカラーは必須項目です' : 'タグバックエンドカラーは文字列で入力してください'),
+    })
+    .min(1, 'タグバックエンドカラーは1文字以上です'),
 });
 const tagId = z.uuidv7('タグIDは有効なID形式で入力してください');
 

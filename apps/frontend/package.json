@@ -10,6 +10,12 @@
     "lint": "eslint \"{app,libs,service}/**/*.{ts,tsx}\"  --fix",
     "format": "prettier --write \"{app,libs,service}/**/*.{ts,tsx}\""
   },
+  "turbo": {
+    "outputs": [
+      ".next/**",
+      "!.next/cache/**"
+    ]
+  },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",

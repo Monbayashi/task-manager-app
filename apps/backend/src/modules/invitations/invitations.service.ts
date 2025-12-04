@@ -1,4 +1,4 @@
-import { ConflictException, GoneException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, GoneException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { TaskQueryService } from '../../shared/database/dynamodb/task-table/task.query.service';
 import { TaskCommandService } from '../../shared/database/dynamodb/task-table/task.command.service';
 import {
@@ -17,8 +17,8 @@ import {
   ReqParamInvitationsRegisterDTO,
   ReqParamInvitationsToTeamUserDTO,
 } from './invitations.dto';
-import { InvitationQueryService } from 'src/shared/database/dynamodb/invitation-table/invitation.query.service';
-import { InvitationCommandService } from 'src/shared/database/dynamodb/invitation-table/invitation.command.service';
+import { InvitationQueryService } from '../../shared/database/dynamodb/invitation-table/invitation.query.service';
+import { InvitationCommandService } from '../../shared/database/dynamodb/invitation-table/invitation.command.service';
 
 @Injectable()
 export class InvitationsService {
@@ -51,7 +51,7 @@ export class InvitationsService {
         inviteId: invitation.SK.replace('INVITE#', ''),
         email: invitation.email,
         role: invitation.user_role,
-        invitedBy: invitation.invitedBy,
+        invitedBy: invitation.invitedBy.replace('USER#', ''),
         createdAt: new Date(invitation.createdAt * 1000).toISOString(),
         expiresAt: new Date(invitation.expiresAt * 1000).toISOString(),
         team_name: invitation.team_name,
@@ -69,7 +69,7 @@ export class InvitationsService {
       inviteId: invitation.SK.replace('INVITE#', ''),
       email: invitation.email,
       role: invitation.user_role,
-      invitedBy: invitation.invitedBy,
+      invitedBy: invitation.invitedBy.replace('USER#', ''),
       createdAt: new Date(invitation.createdAt * 1000).toISOString(),
       expiresAt: new Date(invitation.expiresAt * 1000).toISOString(),
       team_name: invitation.team_name,
@@ -97,7 +97,7 @@ export class InvitationsService {
       inviteId: invitation.SK.replace('INVITE#', ''),
       email: invitation.email,
       role: invitation.user_role,
-      invitedBy: invitation.invitedBy,
+      invitedBy: invitation.invitedBy.replace('USER#', ''),
       createdAt: new Date(invitation.createdAt * 1000).toISOString(),
       expiresAt: new Date(invitation.expiresAt * 1000).toISOString(),
       team_name: invitation.team_name,
@@ -111,7 +111,7 @@ export class InvitationsService {
     const result = await this.invitationCommandService.deleteInvitation({ teamId, inviteId });
     return {
       teamId: result.PK.replace('TEAM#', ''),
-      inviteId: result.SK.replace('TASK#', ''),
+      inviteId: result.SK.replace('INVITE#', ''),
     };
   }
 
@@ -126,14 +126,14 @@ export class InvitationsService {
     const now = Math.floor(Date.now() / 1000);
     // 招待チェック
     const invitationsItem = await this.invitationQueryService.getInvitationToken(teamId, inviteId);
-    if (!invitationsItem) throw new NotFoundException('招待が存在しません');
-    if (invitationsItem.token !== token) throw new UnauthorizedException('トークンが一致しません');
-    if (invitationsItem.expiresAt < now) throw new GoneException('期限切れの招待です');
+    if (!invitationsItem) throw new NotFoundException('この招待は無効です');
+    if (invitationsItem.token !== token) throw new ForbiddenException('招待トークンが無効です');
+    if (invitationsItem.expiresAt < now) throw new GoneException('この招待は期限切れです');
     // ユーザチェック
     const user = await this.taskQueryService.getUserWithTeams(userId);
     if (!user || !user.user) throw new NotFoundException('ユーザが存在しません');
-    if (user.teams.find((team) => team.SK.replace('TEAM#', '') === teamId)) throw new ConflictException('既にチームに参加済みのユーザです。');
-    if (user.user.user_email !== invitationsItem.email) throw new UnauthorizedException('メールアドレスが一致しません');
+    if (user.teams.find((team) => team.SK.replace('TEAM#', '') === teamId)) throw new ConflictException('すでにこのチームに参加しています');
+    if (user.user.user_email !== invitationsItem.email) throw new ForbiddenException('招待されたユーザと一致しません');
     // チームチェック
     const team = await this.taskQueryService.getTeam(teamId);
     if (!team) throw new NotFoundException('チームが存在しません');

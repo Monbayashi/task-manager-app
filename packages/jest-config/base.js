@@ -12,7 +12,7 @@ const baseConfig = {
   transform: { "^.+\\.(t|j)s$": "ts-jest" },
 
   moduleNameMapper: {
-    "^@repo/types$": "<rootDir>/../../packages/types/src",
+    "^@repo/api-models$": "<rootDir>/../../packages/api-models/src",
   },
 };
 

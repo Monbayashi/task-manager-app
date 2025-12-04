@@ -3,14 +3,14 @@ import { z } from 'zod';
 /** [共通] teamName */
 export const commonTeamName = z
   .string({ error: (issue) => (issue.input === undefined ? 'チーム名は必須項目です' : 'チーム名は文字列で入力してください') })
-  .min(2, 'チームー名は2文字以上です')
-  .max(16, 'チームー名は16文字までです');
+  .min(2, 'チーム名は2文字以上です')
+  .max(16, 'チーム名は16文字までです');
 
 /** [共通] userName */
 export const commonUserName = z
   .string({ error: (issue) => (issue.input === undefined ? 'ユーザ名は必須項目です' : 'ユーザ名は文字列で入力してください') })
-  .min(2, 'ユーザー名は2文字以上です')
-  .max(16, 'ユーザー名は16文字までです');
+  .min(2, 'ユーザ名は2文字以上です')
+  .max(16, 'ユーザ名は16文字までです');
 
 /** [共通] email */
 export const commonEmail = z

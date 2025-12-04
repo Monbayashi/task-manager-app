@@ -1,1 +1,1 @@
-module.exports = require('@repo/jest-config/nest-js');
+module.exports = require('@repo/jest-config/nest-e2e-js');
