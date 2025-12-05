@@ -36,6 +36,7 @@ export class LambdaStack extends cdk.Stack {
         AWS_SNS_ENDPOINT: "http://host.docker.internal:4566",
         INVITATION_LOG_LEVEL: "info",
         INVITATION_LINK_ORIGIN: "http://localhost:3000",
+        INVITATION_RETRY_TIMEOUT: "1000",
         NODE_OPTIONS: "--enable-source-maps",
       },
     });

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DynamoDBRecord } from 'aws-lambda';
-import { TypedConfigService } from 'src/common/config/typed-config.service';
-import { SnsClientService } from 'src/shared/sns/sns-client.service';
+import { TypedConfigService } from '../common/config/typed-config.service';
+import { SnsClientService } from '../shared/sns/sns-client.service';
 import { z, flattenError } from 'zod';
 
 const SUBJECT = '【招待】チームへの招待が届いています' as const;
@@ -37,8 +37,8 @@ export class InvitationService {
     this.logger.log({ msg: 'Invitation Service 起動' });
     const parseData = this.parse(record);
     const snsMessge = this.createMessage(parseData);
-    await this.snsClient.publish(SUBJECT, snsMessge, parseData.email);
-    this.logger.log({ msg: 'チーム招待メール送信完了', target: parseData });
+    const result = await this.snsClient.publish(SUBJECT, snsMessge, parseData.email);
+    this.logger.log({ msg: 'チーム招待メール送信成功', MessageId: result.MessageId, target: parseData });
     this.logger.log('Invitation Service 終了');
     return;
   }
@@ -51,8 +51,8 @@ export class InvitationService {
       throw new Error('データフォーマット不正');
     }
     return {
-      teamId: parseData.data.PK.S,
-      inviteId: parseData.data.SK.S,
+      teamId: parseData.data.PK.S.replace('TEAM#', ''),
+      inviteId: parseData.data.SK.S.replace('INVITE#', ''),
       email: parseData.data.email.S,
       teamName: parseData.data.team_name.S,
       token: parseData.data.token.S,

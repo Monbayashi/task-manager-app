@@ -1,4 +1,3 @@
-// sns.service.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { SNSClient, PublishCommand, SNSServiceException, ThrottledException, InternalErrorException } from '@aws-sdk/client-sns';
 import { TypedConfigService } from '../../common/config/typed-config.service';
@@ -49,8 +48,8 @@ export class SnsClientService {
         }
         // Retry ログ
         this.logger.warn({ msg: `SNS エラー:1秒後にリトライ処理 (${attempt}/${MAX_RETRY})` });
-        // 1秒待機
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // 待機
+        await new Promise((resolve) => setTimeout(resolve, this.config.get('INVITATION_RETRY_TIMEOUT')));
       }
     }
     // リトライ限界
