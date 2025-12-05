@@ -4,24 +4,41 @@ import { DynamoDBStreamEvent } from 'aws-lambda';
 import { InvitationService } from './invitation/invitation.service';
 import { INestApplicationContext } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
+import { EventUtilsService } from './shared/event/event-client.service';
 
-let appContext: INestApplicationContext | undefined;
+let appContext: INestApplicationContext;
+let logger: Logger;
+let eventUtils: EventUtilsService;
+let invitationService: InvitationService;
 
 export const handler = async (event: DynamoDBStreamEvent) => {
   if (!appContext) {
     appContext = await NestFactory.createApplicationContext(AppModule, { bufferLogs: true });
+    // logger
+    logger = appContext.get(Logger);
+    appContext.useLogger(logger);
+    appContext.flushLogs();
+    // サービス
+    eventUtils = appContext.get(EventUtilsService);
+    invitationService = appContext.get(InvitationService);
   }
-  // logger
-  const logger = appContext.get(Logger);
-  appContext.useLogger(logger);
-  appContext.flushLogs();
+  // タイプガード
+  if (eventUtils == null) eventUtils = appContext.get(EventUtilsService);
+  if (invitationService == null) invitationService = appContext.get(InvitationService);
+
   // 処理開始
-  logger.log('=== Lambda START 【v25】 ===');
-  logger.log(event);
-  const service = appContext.get(InvitationService);
-  const data = service.parse(event);
-  await service.sendEmail(data);
-  logger.log('sendEmail executed');
-  logger.log(`=== Lambda END 【v25】===`);
+  for (const record of event.Records) {
+    try {
+      const classify = eventUtils.classifyEventRecord(record);
+      // 招待メール送信処理
+      if (classify === 'invitation') {
+        await invitationService.sendInvitationMain(record);
+      }
+    } catch (error) {
+      logger.error({ msg: '永続エラーのためスキップ', error });
+      continue;
+    }
+  }
+  // レスポンス
   return { ok: true };
 };
