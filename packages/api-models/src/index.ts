@@ -1,5 +1,3 @@
-import z from 'zod';
-
 // USERS
 export * from './users/index.ts';
 // TEAMS
@@ -12,9 +10,3 @@ export * from './tasks/index.ts';
 export * from './invitations/index.ts';
 // COUNTER
 export * from './summary/index.ts';
-
-// test
-export const getHelloResScheme = z.string({ error: 'helloは文字です。' });
-
-// test
-export type GetHelloResDto = z.infer<typeof getHelloResScheme>;

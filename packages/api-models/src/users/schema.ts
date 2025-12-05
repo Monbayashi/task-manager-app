@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { commonEmail, commonTeamName, commonUserName } from '../common/index.ts';
+import { commonEmail, commonTeamName, commonUserName } from '../common/schema.ts';
 
 /**
  * [Request-Body-Schema] ユーザ作成

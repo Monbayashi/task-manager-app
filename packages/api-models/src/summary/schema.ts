@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { commonTeamId } from '../common/index.ts';
+import { commonTeamId } from '../common/schema.ts';
 
 /**
  * [Requset-Query-Schema] チームのタスク件数を取得

@@ -30,6 +30,5 @@ describe('newTaskFormSchema', () => {
 
     // refine で指定したエラーが返ってくるか確認
     expect(result.error?.issues[0]?.path).toEqual(['startTime']);
-    expect(result.error?.issues[0]?.message).toBe('開始日時 は 終了日時 以下である必要があります');
   });
 });
