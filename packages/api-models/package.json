@@ -2,7 +2,6 @@
   "name": "@repo/api-models",
   "version": "0.0.1",
   "private": true,
-  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -20,10 +19,14 @@
     "build": "tsc -p tsconfig.build.json",
     "dev:prepare": "tsc -b tsconfig.build.json",
     "dev:prepare:watch": "tsc -b tsconfig.build.json --watch",
-    "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" jest",
-    "test:watch": "jest --watch",
+    "test": "jest",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\""
+  },
+  "turbo": {
+    "outputs": [
+      "dist/**"
+    ]
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

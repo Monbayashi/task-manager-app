@@ -1,41 +1,19 @@
 import { z } from 'zod';
-import { commonTaskId, commonTeamId } from '../common/index.ts';
+import {
+  commonEndTime,
+  commonFromTo,
+  commonIndexType,
+  commonSort,
+  commonStartTime,
+  commonStatusGroup,
+  commonTagRefs,
+  commonTaskDiscription,
+  commonTaskId,
+  commonTaskStatus,
+  commonTaskTitle,
+  commonTeamId,
+} from '../common/schema.ts';
 import { isValid, parseISO } from 'date-fns';
-
-const taskTitle = z
-  .string({ error: (issue) => (issue.input === undefined ? 'タイトルは必須項目です' : 'タイトルは文字列で入力してください') })
-  .min(1, 'タイトルは1文字以上です')
-  .max(50, 'タイトルは50文字までです');
-const taskDiscription = z
-  .string({ error: (issue) => (issue.input === undefined ? '説明は必須項目です' : '説明は文字列で入力してください') })
-  .min(1, '説明は1文字以上です')
-  .max(5000, '説明は5000文字までです');
-const taskStatus = z.enum(['todo', 'doing', 'done'], 'ステータス値が不正です (todo / doing / done)');
-const tagRefs = z.array(z.uuid('タグIDは有効なID形式で入力してください'));
-const startTime = z
-  .string({ error: (issue) => (issue.input === undefined ? '開始日時は必須項目です' : '開始日時は文字列で入力してください') })
-  .refine((val) => isValid(parseISO(val)), '有効な日付（ISO 8601形式）を入力してください');
-const endTime = z
-  .string({ error: (issue) => (issue.input === undefined ? '終了日時は必須項目です' : '終了日時は文字列で入力してください') })
-  .refine((val) => isValid(parseISO(val)), '有効な日付（ISO 8601形式）を入力してください');
-
-// query
-const statusGroup = z
-  .enum(
-    ['todo', 'doing', 'done', 'todo_doing', 'doing_done', 'todo_done', 'all'],
-    'ステータスグループ値が不正です (todo / doing / done / todo_doing / doing_done / todo_done / all)'
-  )
-  .optional();
-const indexType = z.enum(['start', 'end'], 'インデックスタイプ値が不正です (start / end)').optional();
-// fromDateとtoDateで使用
-const fromToSchema = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}$/, '日付は YYYY-MM-DD 形式で指定してください')
-  .optional();
-const sort = z.enum(['asc', 'dasc'], 'ソート値が不正です (asc / dasc)').optional();
-
-/** [共通] teamId */
-export const tagId = z.uuidv7('タグIDは有効なID形式で入力してください');
 
 /**
  * [Requset-Param-Schema] タスク一覧を取得
@@ -47,12 +25,12 @@ export const ReqParamTasksSchema = z.object({ teamId: commonTeamId });
  */
 export const ReqQueryTasksSchema = z
   .object({
-    statusGroup: statusGroup,
-    indexType: indexType,
-    tagRefs: tagRefs.optional(),
-    fromDate: fromToSchema,
-    toDate: fromToSchema,
-    sort: sort,
+    statusGroup: commonStatusGroup.optional(),
+    indexType: commonIndexType.optional(),
+    tagRefs: commonTagRefs.optional(),
+    fromDate: commonFromTo.optional(),
+    toDate: commonFromTo.optional(),
+    sort: commonSort.optional(),
     nextToken: z.string().optional(),
   })
   .refine(
@@ -80,12 +58,12 @@ export const ReqParamTasksRegisterSchema = z.object({ teamId: commonTeamId });
  */
 export const ReqBodyTasksRegisterSchema = z
   .object({
-    title: taskTitle,
-    discription: taskDiscription,
-    status: taskStatus,
-    tagRefs: tagRefs,
-    startTime: startTime,
-    endTime: endTime,
+    title: commonTaskTitle,
+    discription: commonTaskDiscription,
+    status: commonTaskStatus,
+    tagRefs: commonTagRefs,
+    startTime: commonStartTime,
+    endTime: commonEndTime,
   })
   .refine((data) => parseISO(data.startTime) <= parseISO(data.endTime), {
     error: '開始日時 は 終了日時 以下である必要があります',
@@ -107,12 +85,12 @@ export const ReqParamTasksUpdateSchema = z.object({ teamId: commonTeamId, taskId
  */
 export const ReqBodyTasksUpdateSchema = z
   .object({
-    title: taskTitle.optional(),
-    discription: taskDiscription.optional(),
-    status: taskStatus.optional(),
-    tagRefs: tagRefs.optional(),
-    startTime: startTime.optional(),
-    endTime: endTime.optional(),
+    title: commonTaskTitle.optional(),
+    discription: commonTaskDiscription.optional(),
+    status: commonTaskStatus.optional(),
+    tagRefs: commonTagRefs.optional(),
+    startTime: commonStartTime.optional(),
+    endTime: commonEndTime.optional(),
   })
   .refine(
     (data) => {

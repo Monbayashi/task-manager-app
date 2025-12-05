@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards, UsePipes } from '@nestjs/common';
 import type { Request } from 'express';
-import { CognitoAccessGuard } from 'src/common/guards/cognito-access.guard';
+import { CognitoAccessGuard } from '../../common/guards/cognito-access.guard';
 import { InvitationsService } from './invitations.service';
 import {
   ReqParamInvitationsDto,
@@ -18,7 +18,7 @@ import {
   ResBodyInvitationsToTeamUserType,
   ResBodyInvitationsType,
 } from '@repo/api-models/invitations';
-import { PrettyZodValidationPipe } from 'src/common/pipe/pretty-zod-validation.pipe';
+import { PrettyZodValidationPipe } from '../../common/pipe/pretty-zod-validation.pipe';
 
 @Controller('api/teams/:teamId/invitation')
 @UsePipes(PrettyZodValidationPipe)
@@ -33,13 +33,6 @@ export class InvitationsController {
     return await this.invitationsService.getInvitations(userId, param);
   }
 
-  /** チーム招待詳細 */
-  @Get(':inviteId')
-  @UseGuards(CognitoAccessGuard)
-  async getInvitationsItem(@Req() req: Request, @Param() param: ReqParamInvitationsItemDTO): Promise<ResBodyInvitationsItemType> {
-    return await this.invitationsService.getInvitationsItem(param);
-  }
-
   /** 新規チーム招待作成 */
   @Post()
   @UseGuards(CognitoAccessGuard)
@@ -50,6 +43,13 @@ export class InvitationsController {
   ): Promise<ResBodyInvitationsRegisterType> {
     const userId = req.user ? (req.user['sub'] as string) : '';
     return await this.invitationsService.createInvitationsItem(userId, param, body);
+  }
+
+  /** チーム招待詳細 */
+  @Get(':inviteId')
+  @UseGuards(CognitoAccessGuard)
+  async getInvitationsItem(@Req() req: Request, @Param() param: ReqParamInvitationsItemDTO): Promise<ResBodyInvitationsItemType> {
+    return await this.invitationsService.getInvitationsItem(param);
   }
 
   /** チーム招待削除 */

@@ -35,10 +35,10 @@ export const passwordSchema = z
   });
 
 /** [共通] チーム名称 */
-export const teamNameSchema = z.string().min(2, 'チーム名は2文字以上で入力してください').max(16, 'チーム名は8文字以内で入力してください');
+export const teamNameSchema = z.string().min(2, 'チーム名は2文字以上で入力してください').max(16, 'チーム名は16文字以内で入力してください');
 
 /** [共通] ユーザ名称 */
-export const userNameSchema = z.string().min(2, 'ユーザ名は2文字以上で入力してください').max(16, 'ユーザ名は8文字以内で入力してください');
+export const userNameSchema = z.string().min(2, 'ユーザ名は2文字以上で入力してください').max(16, 'ユーザ名は16文字以内で入力してください');
 
 /** [共通] チームロール */
 export const teamRoleSchema = z.enum(['admin', 'member'], 'ロール値が不正です (admin / member)');

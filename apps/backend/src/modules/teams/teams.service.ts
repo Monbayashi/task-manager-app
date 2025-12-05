@@ -52,7 +52,7 @@ export class TeamsService {
   async getTeamById(userId: string, param: ReqParamTeamsTeamDto): Promise<ResBodyTeamsTeamType> {
     await this.commonGetTeamMember(userId, param.teamId);
     const team = await this.taskQueryService.getTeam(param.teamId);
-    if (!team) throw new NotFoundException('チームが存在しません');
+    if (!team) throw new NotFoundException('データが存在しません');
     return {
       teamId: team.PK.replace('TEAM#', ''),
       teamName: team.team_name,

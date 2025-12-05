@@ -14,7 +14,7 @@ export class UsersService {
   /** ユーザデータ取得 */
   async getUserById(userId: string): Promise<ResBodyUsersMeType | null> {
     const { user, teams } = await this.taskQueryService.getUserWithTeams(userId);
-    if (!user) throw new NotFoundException('未登録ユーザです');
+    if (!user) throw new NotFoundException('データが存在しません');
     return {
       user: {
         email: user.user_email,
@@ -43,7 +43,7 @@ export class UsersService {
     return result;
   }
 
-  /** ユーザー名更新 */
+  /** ユーザ名更新 */
   async updateUser(userId: string, body: { userName: string }) {
     // ユーザーが所属する全チームを取得
     const userTeams = await this.taskQueryService.getUserTeams(userId);

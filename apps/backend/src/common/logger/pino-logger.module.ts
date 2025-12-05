@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, RequestMethod } from '@nestjs/common';
 import { formatISO } from 'date-fns';
 import { LoggerModule } from 'nestjs-pino';
 import { TypedConfigModule } from '../config/typed-config.module';
@@ -13,6 +13,12 @@ import { toZonedTime } from 'date-fns-tz';
       inject: [TypedConfigService],
       useFactory: async (config: TypedConfigService) => {
         return {
+          // ロガー除外設定
+          exclude: [
+            { path: 'api/health', method: RequestMethod.GET },
+            { path: 'api/healthz', method: RequestMethod.GET },
+          ],
+          // pinoHttp設定
           pinoHttp: {
             level: config.get('BACKEND_LOG_LEVEL'),
             // pid, hostname などの不要な base 情報を消す

@@ -1,7 +1,19 @@
 import { isValid, parseISO } from 'date-fns';
 import { z } from 'zod';
 
-const dateSchema = z
+/** statusGroup */
+export const statusGroup = z.enum(
+  ['todo', 'doing', 'done', 'todo_doing', 'doing_done', 'todo_done', 'all'],
+  'ステータスグループ値が不正です (todo / doing / done / todo_doing / doing_done / todo_done / all)'
+);
+
+/** indexType */
+export const indexType = z.enum(['start', 'end'], 'インデックスタイプ値が不正です (start / end)');
+
+/** sort */
+export const sort = z.enum(['asc', 'dasc'], 'ソート値が不正です (asc / dasc)');
+
+export const dateSchema = z
   .union([z.literal(''), z.string().regex(/^\d{4}-\d{2}-\d{2}$/, '日付は YYYY-MM-DD 形式で指定してください')])
   .transform((val) => (val === '' ? undefined : val))
   .optional();
@@ -9,14 +21,11 @@ const dateSchema = z
 /** タスク一覧検索Form Schema */
 export const searchTasksFormSchema = z
   .object({
-    statusGroup: z.enum(
-      ['todo', 'doing', 'done', 'todo_doing', 'doing_done', 'todo_done', 'all'],
-      'ステータスグループ値が不正です (todo / doing / done / todo_doing / doing_done / todo_done / all)'
-    ),
-    indexType: z.enum(['start', 'end'], 'インデックスタイプ値が不正です (start / end)'),
+    statusGroup,
+    indexType,
     fromDate: dateSchema,
     toDate: dateSchema,
-    sort: z.enum(['asc', 'dasc'], 'ソート値が不正です (asc / dasc)'),
+    sort: sort,
   })
   .refine(
     (data) => {

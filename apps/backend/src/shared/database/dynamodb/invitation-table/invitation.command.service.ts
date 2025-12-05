@@ -5,6 +5,7 @@ import { InvitationItem, UserRole } from './types';
 import { randomBytes } from 'crypto';
 import { addDays } from 'date-fns';
 import { DynamoClientService } from '../dynamo-client.service';
+import { handleDynamoError } from '../handle-dynamo-error';
 
 @Injectable()
 export class InvitationCommandService {
@@ -32,7 +33,6 @@ export class InvitationCommandService {
     const now = Math.floor(Date.now() / 1000);
     const expiresAt = Math.floor(addDays(new Date(), ttlDays).getTime() / 1000);
     const token = randomBytes(32).toString('hex');
-
     const item: InvitationItem = {
       PK: `TEAM#${teamId}`,
       SK: `INVITE#${inviteId}`,
@@ -45,14 +45,17 @@ export class InvitationCommandService {
       token: token,
       team_name: teamName,
     };
+    const putCommand = new PutCommand({
+      TableName: this.dynamoClient.invitationTable,
+      Item: item,
+    });
 
-    await this.dynamoClient.db.send(
-      new PutCommand({
-        TableName: this.dynamoClient.invitationTable,
-        Item: item,
-      })
-    );
-    return item;
+    try {
+      await this.dynamoClient.db.send(putCommand);
+      return item;
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 
   /**
@@ -66,15 +69,19 @@ export class InvitationCommandService {
    */
   async deleteInvitation(params: { teamId: string; inviteId: string }) {
     const { teamId, inviteId } = params;
-    await this.dynamoClient.db.send(
-      new DeleteCommand({
-        TableName: this.dynamoClient.invitationTable,
-        Key: {
-          PK: `TEAM#${teamId}`,
-          SK: `INVITE#${inviteId}`,
-        },
-      })
-    );
-    return { PK: `TEAM#${teamId}`, SK: `INVITE#${inviteId}` };
+    const deleteCommand = new DeleteCommand({
+      TableName: this.dynamoClient.invitationTable,
+      Key: {
+        PK: `TEAM#${teamId}`,
+        SK: `INVITE#${inviteId}`,
+      },
+    });
+
+    try {
+      await this.dynamoClient.db.send(deleteCommand);
+      return { PK: `TEAM#${teamId}`, SK: `INVITE#${inviteId}` };
+    } catch (err) {
+      return handleDynamoError(err);
+    }
   }
 }

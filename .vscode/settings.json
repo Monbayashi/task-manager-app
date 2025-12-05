@@ -24,7 +24,8 @@
     "INFO",
     "HACK",
     "OPTIMIZE",
-    "REFACTOR"
+    "REFACTOR",
+    "HR"
   ],
   "todo-tree.highlights.customHighlight": {
     "TODO": {
@@ -64,6 +65,12 @@
     },
     "REFACTOR": {
       "icon": "tools",
+      "foreground": "#D19A66",
+      "type": "text"
+    },
+    // 分割コメント用
+    "HR": {
+      "background": "#36454F",
       "foreground": "#D19A66",
       "type": "text"
     }

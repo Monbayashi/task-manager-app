@@ -5,7 +5,7 @@ import useSWRMutation from 'swr/mutation';
 import { ReqBodyUsersUpdateType, ResBodyUsersUpdateType } from '@repo/api-models/users';
 
 export const updateUser = async (url: '/api/users/update', { arg }: { arg: ReqBodyUsersUpdateType }): Promise<ResBodyUsersUpdateType> => {
-  const response = await api.post(url, arg);
+  const response = await api.put(url, arg);
   return response.data;
 };
 

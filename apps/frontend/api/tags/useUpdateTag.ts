@@ -5,7 +5,7 @@ import useSWRMutation from 'swr/mutation';
 import { ReqBodyTagsUpdateType, ResBodyTagsUpdateType } from '@repo/api-models/tags';
 
 export const updateTag = async (url: string, { arg }: { arg: ReqBodyTagsUpdateType }): Promise<ResBodyTagsUpdateType> => {
-  const response = await api.post(url, arg);
+  const response = await api.put(url, arg);
   return response.data;
 };
 

@@ -104,15 +104,6 @@ AWS_COGNITO_USER_POOL_ID=ap-northeast-1_MD7zqiZga
 AWS_COGNITO_CLIENT_ID=7oa3l9iv02dr6vv6du8b0aqehm
 ```
 
-#### apps/invitation-service/.env.develop
-
-```
-# AWS
-AWS_REGION=ap-northeast-1
-AWS_SNS_ENDPOINT=http://localhost:4566
-AWS_SNS_TOPIC_ARN=arn:aws:sns:ap-northeast-1:000000000000:invitation-topic
-```
-
 #### apps/invitation-service/.env.test
 
 ```

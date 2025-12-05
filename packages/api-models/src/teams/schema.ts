@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { commonRole, commonTeamId, commonTeamName, commonUserId } from '../common/index.ts';
+import { commonRole, commonTeamId, commonTeamName, commonUserId } from '../common/schema.ts';
 
 /**
  * [Requset-Param-Schema] チーム情報を取得
