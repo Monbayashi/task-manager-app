@@ -14,7 +14,8 @@
     "test-localstack:start": "node scripts/1.docker-start-localstack.ts",
     "test-localstack:wait-dynamodb": "node scripts/2.wait-for-dynamodb.ts",
     "test-localstack:tables": "node -r ts-node/register scripts/3.create-tables.ts",
-    "test": "node scripts/4.test-e2e-run.ts"
+    "test": "node scripts/4.test-e2e-run.ts",
+    "test:ci": "node scripts/5.test-e2e-ci.ts"
   },
   "turbo": {
     "outputs": [

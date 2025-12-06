@@ -16,7 +16,7 @@ import { TypedConfigService } from './typed-config.service';
           console.error(parsed.error.issues.map((issue) => `- ${issue.path.join('.')} : ${issue.message}`));
           throw new Error('環境変数が不正');
         }
-        return parsed.data;
+        return { ...config, ...parsed.data };
       },
     }),
   ],

@@ -14,7 +14,7 @@ const nestE2EConfig = {
   // カバレッジ範囲
   collectCoverage: true,
   coverageDirectory: "coverage",
-  coverageReporters: [],
+  coverageReporters: ["json", "json-summary", "text"],
   coverageProvider: "v8",
   testEnvironment: "node",
   collectCoverageFrom: [
@@ -27,6 +27,8 @@ const nestE2EConfig = {
     "!./src/common/logger/*.ts",
     "!./src/database/dynamodb/dynamo-client.service.ts",
     "!./src/types/*.d.ts",
+    "!./src/**/types.ts",
+    "!./src/main.ts",
   ],
 };
 

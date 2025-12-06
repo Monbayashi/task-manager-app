@@ -20,7 +20,29 @@
       "cache": false,
       "persistent": true
     },
-    "test": {},
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "test:ci": {
+      "dependsOn": ["^build"],
+      "env": [
+        "BACKEND_PREFIX",
+        "BACKEND_PORT",
+        "BACKEND_LOG_LEVEL",
+        "BACKEND_CORS_ORIGIN",
+        "INVITATION_LOG_LEVEL",
+        "INVITATION_LINK_ORIGIN",
+        "INVITATION_RETRY_TIMEOUT",
+        "AWS_REGION",
+        "AWS_DYNAMO_ENDPOINT",
+        "AWS_DYNAMO_TASK_TABLE",
+        "AWS_DYNAMO_INVITATION_TABLE",
+        "AWS_COGNITO_USER_POOL_ID",
+        "AWS_COGNITO_CLIENT_ID",
+        "AWS_SNS_ENDPOINT",
+        "AWS_SNS_TOPIC_ARN"
+      ]
+    },
     "lint": {},
     "format": {}
   }

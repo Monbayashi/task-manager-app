@@ -20,6 +20,7 @@
     "dev:prepare": "tsc -b tsconfig.build.json",
     "dev:prepare:watch": "tsc -b tsconfig.build.json --watch",
     "test": "jest",
+    "test:ci": "jest",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\""
   },

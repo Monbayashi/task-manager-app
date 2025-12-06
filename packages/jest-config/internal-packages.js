@@ -6,9 +6,13 @@ const baseConfig = require("./base");
  * */
 const internalPackageConfig = {
   ...baseConfig,
-  rootDir: "./src",
+  rootDir: "./",
   // カバレッジ範囲
-  collectCoverageFrom: ["**/*.ts", "!**/*.test.ts", "!**/*.spec.ts"],
+  collectCoverageFrom: [
+    "./src/**/*.ts",
+    "!./src/**/*.test.ts",
+    "!./src/**/*.spec.ts",
+  ],
   preset: "ts-jest/presets/default-esm",
 };
 

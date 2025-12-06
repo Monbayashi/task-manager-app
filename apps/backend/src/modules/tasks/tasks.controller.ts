@@ -30,7 +30,7 @@ export class TasksController {
   @Get()
   @UseGuards(CognitoAccessGuard)
   async getTasks(@Req() req: Request, @Param() param: ReqParamTasksDto, @Query() query: ReqQueryTasksDto): Promise<ResBodyTasksType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.tasksService.getTasks(userId, param, query);
   }
 
@@ -38,7 +38,7 @@ export class TasksController {
   @Get(':taskId')
   @UseGuards(CognitoAccessGuard)
   async getTask(@Req() req: Request, @Param() param: ReqParamTasksTaskDTO): Promise<ResBodyTasksTaskType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.tasksService.getTask(userId, param);
   }
 
@@ -50,7 +50,7 @@ export class TasksController {
     @Param() param: ReqParamTasksRegisterDTO,
     @Body() body: ReqBodyTasksRegisterDTO
   ): Promise<ResBodyTasksRegisterType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.tasksService.createTask(userId, param, body);
   }
 
@@ -62,7 +62,7 @@ export class TasksController {
     @Param() param: ReqParamTasksUpdateDTO,
     @Body() body: ReqBodyTasksUpdateDTO
   ): Promise<ResBodyTasksUpdateType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.tasksService.updateTask(userId, param, body);
   }
 
@@ -70,7 +70,7 @@ export class TasksController {
   @Delete(':taskId')
   @UseGuards(CognitoAccessGuard)
   async deleteTag(@Req() req: Request, @Param() param: ReqParamTasksDeleteDTO): Promise<ResBodyTasksDeleteType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.tasksService.deleteTask(userId, param);
   }
 }

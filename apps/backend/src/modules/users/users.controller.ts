@@ -15,7 +15,7 @@ export class UsersController {
   @Get('me')
   @UseGuards(CognitoAccessGuard)
   async getMe(@Req() req: Request): Promise<ResBodyUsersMeType | null> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     const user = await this.usersService.getUserById(userId);
     return user;
   }
@@ -24,7 +24,7 @@ export class UsersController {
   @Post('register')
   @UseGuards(CognitoAccessGuard)
   async postRegister(@Req() req: Request, @Body() body: ReqBodyUsersRegisterDTO): Promise<ResBodyUsersRegisterType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.usersService.createUser(userId, body);
   }
 
@@ -32,7 +32,7 @@ export class UsersController {
   @Put('update')
   @UseGuards(CognitoAccessGuard)
   async postUpdate(@Req() req: Request, @Body() body: ReqBodyUsersUpdateDTO): Promise<ResBodyUsersUpdateType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.usersService.updateUser(userId, body);
   }
 }
