@@ -2,6 +2,6 @@ import 'express';
 
 declare module 'express' {
   interface Request {
-    user?: Record<string, any>;
+    user?: { sub: string } & Record<string, any>;
   }
 }

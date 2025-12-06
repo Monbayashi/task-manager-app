@@ -6,9 +6,13 @@ const baseConfig = require("./base");
  */
 const nestConfig = {
   ...baseConfig,
-  rootDir: "./src",
+  rootDir: "./",
   // カバレッジ範囲
-  collectCoverageFrom: ["**/*.service.ts", "!**/*.test.ts", "!**/*.spec.ts"],
+  collectCoverageFrom: [
+    "./src/**/*.service.ts",
+    "!./src/**/*.test.ts",
+    "!./src/**/*.spec.ts",
+  ],
   moduleNameMapper: {
     ...baseConfig.moduleNameMapper,
   },

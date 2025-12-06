@@ -29,7 +29,7 @@ export class InvitationsController {
   @Get()
   @UseGuards(CognitoAccessGuard)
   async getInvitations(@Req() req: Request, @Param() param: ReqParamInvitationsDto): Promise<ResBodyInvitationsType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.invitationsService.getInvitations(userId, param);
   }
 
@@ -41,7 +41,7 @@ export class InvitationsController {
     @Param() param: ReqParamInvitationsRegisterDTO,
     @Body() body: ReqBodyInvitationsRegisterDTO
   ): Promise<ResBodyInvitationsRegisterType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.invitationsService.createInvitationsItem(userId, param, body);
   }
 
@@ -56,7 +56,7 @@ export class InvitationsController {
   @Delete(':inviteId')
   @UseGuards(CognitoAccessGuard)
   async deleteDelete(@Req() req: Request, @Param() param: ReqParamInvitationsDeleteDTO): Promise<ResBodyInvitationsDeleteType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.invitationsService.deleteInvitationsItem(userId, param);
   }
 
@@ -68,7 +68,7 @@ export class InvitationsController {
     @Param() param: ReqParamInvitationsToTeamUserDTO,
     @Body() body: ReqBodyInvitationsToTeamUserDTO
   ): Promise<ResBodyInvitationsToTeamUserType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.invitationsService.createTeamUserFromInvitations(userId, param, body);
   }
 }

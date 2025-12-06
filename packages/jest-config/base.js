@@ -4,7 +4,7 @@ const baseConfig = {
   clearMocks: true,
   collectCoverage: true,
   coverageDirectory: "coverage",
-  coverageReporters: [],
+  coverageReporters: ["json", "json-summary", "text"],
   coverageProvider: "v8",
   testEnvironment: "node",
   transformIgnorePatterns: ["/node_modules/"],

@@ -15,7 +15,7 @@ export class SummaryController {
   @Get('counts')
   @UseGuards(CognitoAccessGuard)
   async getTasksCounter(@Req() req: Request, @Query() query: ReqQuerySummaryCountsDto): Promise<ResQuerySummaryCountsType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.summaryService.getCounts(userId, query);
   }
 }

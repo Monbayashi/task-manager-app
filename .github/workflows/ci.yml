@@ -1,9 +1,8 @@
 name: CI TEST
 
 on:
-  push:
-    # branches: [ main ] 確認の為、コメントアウト
   pull_request:
+    branches: [main]
 
 permissions:
   contents: read

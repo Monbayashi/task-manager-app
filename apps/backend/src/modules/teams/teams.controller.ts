@@ -31,7 +31,7 @@ export class TeamsController {
   @Get(':teamId')
   @UseGuards(CognitoAccessGuard)
   async getTeam(@Req() req: Request, @Param() param: ReqParamTeamsTeamDto): Promise<ResBodyTeamsTeamType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.teamsService.getTeamById(userId, param);
   }
 
@@ -39,7 +39,7 @@ export class TeamsController {
   @Put(':teamId')
   @UseGuards(CognitoAccessGuard)
   async putUpdate(@Req() req: Request, @Param() param: ReqParamTeamsUpdateDTO, @Body() body: ReqBodyTeamsUpdateDTO): Promise<ResBodyTeamsUpdateType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.teamsService.updateTeam(userId, param, body);
   }
 
@@ -47,7 +47,7 @@ export class TeamsController {
   @Post('register')
   @UseGuards(CognitoAccessGuard)
   async postRegister(@Req() req: Request, @Body() body: ReqBodyTeamsRegisterDTO): Promise<ResBodyTeamsRegisterType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.teamsService.createTeam(userId, body);
   }
 
@@ -55,7 +55,7 @@ export class TeamsController {
   @Get(':teamId/team-member')
   @UseGuards(CognitoAccessGuard)
   async getTeamMember(@Req() req: Request, @Param() param: ReqParamTeamsUsersDTO): Promise<ResBodyTeamsUsersType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.teamsService.getTeamMember(userId, param);
   }
 
@@ -67,7 +67,7 @@ export class TeamsController {
     @Param() param: ReqParamTeamMemberUpdateDTO,
     @Body() body: ReqBodyTeamMemberUpdateDTO
   ): Promise<ResBodyTeamMemberUpdateType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.teamsService.updateTeamMember(userId, param, body);
   }
 
@@ -75,7 +75,7 @@ export class TeamsController {
   @Delete(':teamId/team-member/:userId')
   @UseGuards(CognitoAccessGuard)
   async deleteTeamMember(@Req() req: Request, @Param() param: ReqParamTeamMemberDeleteDTO): Promise<ResBodyTeamMemberDeleteType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.teamsService.deleteTeamMember(userId, param);
   }
 }

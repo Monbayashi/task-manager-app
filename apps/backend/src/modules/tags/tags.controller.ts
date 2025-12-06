@@ -22,7 +22,7 @@ export class TagsController {
   @Get()
   @UseGuards(CognitoAccessGuard)
   async getTeam(@Req() req: Request, @Param() param: ReqParamTagsDto): Promise<ResBodyTagsType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.tagsService.getTags(userId, param);
   }
 
@@ -34,7 +34,7 @@ export class TagsController {
     @Param() param: ReqParamTagsRegisterDTO,
     @Body() body: ReqBodyTagsRegisterDTO
   ): Promise<ResBodyTagsRegisterType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.tagsService.createTag(userId, param, body);
   }
 
@@ -42,7 +42,7 @@ export class TagsController {
   @Put(':tagId')
   @UseGuards(CognitoAccessGuard)
   async putUpdate(@Req() req: Request, @Param() param: ReqParamTagsUpdateDTO, @Body() body: ReqBodyTagsUpdateDTO): Promise<ResBodyTagsUpdateType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.tagsService.updateTag(userId, param, body);
   }
 
@@ -50,7 +50,7 @@ export class TagsController {
   @Delete(':tagId')
   @UseGuards(CognitoAccessGuard)
   async deleteTag(@Req() req: Request, @Param() param: ReqParamTagsDeleteDTO): Promise<ResBodyTagsDeleteType> {
-    const userId = req.user ? (req.user['sub'] as string) : '';
+    const userId = req.user!.sub;
     return await this.tagsService.deleteTag(userId, param);
   }
 }
