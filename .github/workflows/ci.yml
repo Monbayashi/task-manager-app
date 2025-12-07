@@ -1,15 +1,18 @@
 name: CI TEST
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 
 permissions:
   contents: read
-  checks: write # テスト結果をPRに表示したい場合
+  checks: write
 
 jobs:
   test:
+    name: CI TEST
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # localstack docker
