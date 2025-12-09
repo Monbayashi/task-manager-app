@@ -1,0 +1,29 @@
+# 1. Base image
+FROM node:20-alpine AS base
+# 環境変数
+ARG NEXT_PUBLIC_COGNITO_POOL_ID
+ARG NEXT_PUBLIC_COGNITO_CLIENT_ID
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_DOMAIN
+ARG NEXT_PUBLIC_APP_URL
+
+RUN apk update && apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+
+# 2. Install dependencies
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
+COPY apps/frontend ./apps/frontend
+COPY packages ./packages
+RUN pnpm install --frozen-lockfile --ignore-scripts
+
+RUN NEXT_PUBLIC_COGNITO_POOL_ID=$NEXT_PUBLIC_COGNITO_POOL_ID \
+    NEXT_PUBLIC_COGNITO_CLIENT_ID=$NEXT_PUBLIC_COGNITO_CLIENT_ID \
+    NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL \
+    NEXT_PUBLIC_DOMAIN=$NEXT_PUBLIC_DOMAIN \
+    pnpm --filter=frontend... build
+
+FROM scratch AS final_artifacts
+WORKDIR /
+COPY --from=base /app/apps/frontend/out/ /out_artifact

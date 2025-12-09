@@ -18,9 +18,9 @@ export default function RootPage() {
       try {
         await getCurrentUser();
         const redirectTo = getCognitoOauthRedirect();
-        router.replace(redirectTo ?? '/choose-team');
+        router.replace(redirectTo ?? '/choose-team/');
       } catch {
-        router.replace('/login');
+        router.replace('/login/');
       }
     };
     checkUser();

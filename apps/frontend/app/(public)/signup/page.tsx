@@ -73,7 +73,7 @@ export default function SignupPage() {
         confirmationCode: data.code,
       };
       await confirmSignUp(confirmSignUpInput);
-      router.push('/login');
+      router.push('/login/');
     } catch (err) {
       if (isAmplifyAuthError(err)) {
         if (
@@ -81,7 +81,7 @@ export default function SignupPage() {
           (err.name === 'NotAuthorizedException' && err.message.includes('Current status is CONFIRMED'))
         ) {
           addAlert(`サインアップに失敗しました\nこのメールアドレスはすでに登録済みです\n ログインしてください`, 'error');
-          router.push('/login');
+          router.push('/login/');
         } else {
           addAlert(`認証に失敗しました\n${err.message}`, 'error');
         }
@@ -160,7 +160,7 @@ export default function SignupPage() {
             </AppCardButton>
           </div>
           <div className="flex items-center justify-center rounded-b-md bg-gray-100 p-4">
-            <Link href="/login" className="text-center text-sm text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700">
+            <Link href="/login/" className="text-center text-sm text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700">
               すでにアカウントをお持ちの方
             </Link>
           </div>

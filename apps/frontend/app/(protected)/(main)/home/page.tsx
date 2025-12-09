@@ -20,7 +20,7 @@ const createDelayURL = (
   urlParams.append('indexType', String(condition.indexType));
   urlParams.append('sort', String(condition.sort));
   urlParams.append('toDate', String(condition.toDate));
-  return `/tasks?${urlParams.toString()}`;
+  return `/tasks/?${urlParams.toString()}`;
 };
 
 /** ホーム画面 */

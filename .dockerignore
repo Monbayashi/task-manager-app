@@ -1,0 +1,58 @@
+# 1. ビルド成果物および中間ファイル
+node_modules
+**/node_modules
+dist
+**/dist
+out
+**/out
+coverage
+**/coverage
+.nyc_output
+**/.nyc_output
+.cache
+**/.cache
+.next
+**/.next
+build
+**/build
+tmp
+**/tmp
+temp
+**/temp
+cdk.out
+**/cdk.out
+README.md
+**/README.md
+**/*.tsbuildinfo
+
+# 2. パッケージマネージャ系 ログ
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 3. local config
+.env
+.env.*
+!.env.example
+
+# 4. IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# 5. Git & Docker files
+.git
+.gitignore
+.gitattributes
+.github
+Dockerfile*
+docker-compose*
+
+# 6. OS / Editor files & Monorepo Cache
+.DS_Store
+Thumbs.db
+turbo
+.turbo
+.husky

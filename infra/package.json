@@ -5,17 +5,27 @@
     "infra": "bin/infra.js"
   },
   "scripts": {
-    "localstack:bootstrap": "cdklocal bootstrap",
-    "localstack:deploy": "cdklocal deploy --all --require-approval never",
-    "localstack:deploy:dynamo": "cdklocal deploy DynamoDBStack --require-approval never",
-    "localstack:deploy:lambda": "cdklocal deploy LambdaStack --require-approval never --force",
+    "localstack:bootstrap": "cdklocal bootstrap -c env=local",
+    "localstack:deploy": "cdklocal deploy --all --require-approval never -c env=local",
+    "localstack:deploy:dynamo": "cdklocal deploy DynamoDBStack --require-approval never -c env=local",
+    "localstack:deploy:lambda": "cdklocal deploy LambdaStack --require-approval never --force -c env=local",
     "localstack:watch": "nodemon",
-    "localstack:dev": "pnpm turbo build --filter=invitation-service && pnpm localstack:watch"
+    "localstack:dev": "pnpm turbo build --filter=invitation-service && pnpm localstack:watch",
+    "deploy:pre-frontend": "node ./scripts/build-selector.js",
+    "deploy:pre-lambda": "pnpm turbo build --filter=invitation-service",
+    "deploy:all": "pnpm deploy:pre-frontend && pnpm deploy:pre-lambda &&  && cdk deploy --all --require-approval never",
+    "deploy:network": "cdk deploy NetworkStack --require-approval never",
+    "deploy:backend": "cdk deploy BackendStack --require-approval never",
+    "deploy:frontend": "pnpm deploy:pre-frontend && cdk deploy FrontendStack --require-approval never",
+    "deploy:lambda": "pnpm deploy:pre-lambda && cdk deploy LambdaStack --require-approval never",
+    "destroy:app": "cdk destroy NetworkStack BackendStack FrontendStack --force",
+    "destroy:all": "cdk destroy --all --force"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
     "aws-cdk": "2.1031.2",
     "aws-cdk-local": "^3.0.1",
+    "cross-env": "^10.1.0",
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
     "typescript": "~5.6.3"

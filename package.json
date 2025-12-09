@@ -12,7 +12,8 @@
     "format": "turbo run format",
     "localstack:up": "docker-compose up -d localstack && cd infra && pnpm localstack:bootstrap && pnpm localstack:deploy",
     "localstack:down": "docker-compose down -v",
-    "localstack:dev": "turbo run localstack:dev"
+    "localstack:dev": "turbo run localstack:dev",
+    "prune:backend": "turbo prune backend --docker"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

@@ -5,10 +5,10 @@ import { NestFactory } from '@nestjs/core';
 import { Logger } from 'nestjs-pino';
 import { EventUtilsService } from './shared/event/event-client.service';
 
-// snsモック
-jest.mock('@aws-sdk/client-sns', () => ({
-  ...jest.requireActual('@aws-sdk/client-sns'),
-  SNSClient: jest.fn().mockImplementation(() => ({
+// sesモック
+jest.mock('@aws-sdk/client-ses', () => ({
+  ...jest.requireActual('@aws-sdk/client-ses'),
+  SESClient: jest.fn().mockImplementation(() => ({
     send: jest.fn(),
   })),
 }));

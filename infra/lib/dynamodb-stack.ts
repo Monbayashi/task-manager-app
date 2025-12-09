@@ -21,7 +21,7 @@ export class DynamoDBStack extends cdk.Stack {
       writeCapacity: 1,
       stream: dynamodb.StreamViewType.NEW_AND_OLD_IMAGES,
       timeToLiveAttribute: "expiresAt", // TTL ※ttlなら設定が不要
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
     // ====================
@@ -35,7 +35,7 @@ export class DynamoDBStack extends cdk.Stack {
       readCapacity: 5,
       writeCapacity: 5,
       timeToLiveAttribute: "expiresAt", // TTL ※ttlなら設定が不要
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
     // 必要な属性定義（GSI 用）

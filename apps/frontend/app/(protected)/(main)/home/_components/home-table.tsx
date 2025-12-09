@@ -29,7 +29,7 @@ export const HomeTable = ({ tableData }: { tableData: TableTasksData }) => {
               </td>
               <td className="px-3 py-2 text-left whitespace-nowrap">
                 <Link
-                  href={`/tasks/edit?teamId=${data.teamId}&taskId=${data.taskId}`}
+                  href={`/tasks/edit/?teamId=${data.teamId}&taskId=${data.taskId}`}
                   className="-px-2 flex items-center rounded-md text-blue-800 ring-orange-400 outline-none hover:underline focus:ring-2"
                 >
                   {data.title}

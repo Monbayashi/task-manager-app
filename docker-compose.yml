@@ -7,14 +7,17 @@ services:
       - "4566:4566" # LocalStack Gateway
       - "4572:4572" # DynamoDB
     environment:
-      - SERVICES=lambda,dynamodb,sns,s3,ssm,iam,cloudformation,logs
+      - SERVICES=lambda,dynamodb,sns,ses,s3,ssm,iam,cloudformation,logs
       - DEFAULT_REGION=ap-northeast-1
       - DEBUG=1
       - DYNAMODB_SHARE_DB=1
       - PERSISTENCE=0 # データ永続化を無効化
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
       # - DATA_DIR=/var/lib/localstack/state # 永続化ディレクトリを明示的に設定
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./docker-init:/etc/localstack/init/ready.d"
       # - "./.localstack:/var/lib/localstack" # ホスト側の .localstack フォルダをマウント（新規作成）
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]

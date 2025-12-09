@@ -21,7 +21,7 @@ export default function ProtectedMainLayout({
     const teamId = pathParams.get('teamId');
     const parseTeamId = z.uuidv7().safeParse(teamId);
     if (parseTeamId.success === false) {
-      router.push(`/choose-team?redirect=${pathName}?${pathParams.toString()}`);
+      router.push(`/choose-team/?redirect=${pathName}?${pathParams.toString()}`);
     }
   }, [router, pathName, pathParams]);
 

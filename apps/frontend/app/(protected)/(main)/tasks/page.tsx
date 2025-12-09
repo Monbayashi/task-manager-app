@@ -94,7 +94,7 @@ export default function TasksPage() {
       urlParams.append('sort', String(submitData.sort));
       if (submitData.fromDate) urlParams.append('fromDate', String(submitData.fromDate));
       if (submitData.toDate) urlParams.append('toDate', String(submitData.toDate));
-      router.replace(`/tasks?${urlParams.toString()}`);
+      router.replace(`/tasks/?${urlParams.toString()}`);
     } catch (err) {
       console.error(err);
     }
@@ -114,11 +114,11 @@ export default function TasksPage() {
   };
 
   const onClickNewPage = () => {
-    router.push(`/tasks/new?teamId=${teamId}`);
+    router.push(`/tasks/new/?teamId=${teamId}`);
   };
 
   const onClickEditPage = (taskId: string) => {
-    router.push(`/tasks/edit?teamId=${teamId}&taskId=${taskId}`);
+    router.push(`/tasks/edit/?teamId=${teamId}&taskId=${taskId}`);
   };
 
   const onAfterDeleted = async () => {
@@ -160,7 +160,7 @@ export default function TasksPage() {
       urlParams.append('sort', String(taskSearchParams.sort));
       if (taskSearchParams.fromDate) urlParams.append('fromDate', String(taskSearchParams.fromDate));
       if (taskSearchParams.toDate) urlParams.append('toDate', String(taskSearchParams.toDate));
-      router.replace(`/tasks?${urlParams.toString()}`);
+      router.replace(`/tasks/?${urlParams.toString()}`);
       return;
     }
 
@@ -350,7 +350,7 @@ export default function TasksPage() {
                     </td>
                     <td className="px-3 py-2 text-left whitespace-nowrap">
                       <Link
-                        href={`/tasks/edit?teamId=${task.teamId}&taskId=${task.taskId}`}
+                        href={`/tasks/edit/?teamId=${task.teamId}&taskId=${task.taskId}`}
                         className="-px-2 flex items-center rounded-md text-blue-800 ring-orange-400 outline-none hover:underline focus:ring-2"
                       >
                         {task.title}

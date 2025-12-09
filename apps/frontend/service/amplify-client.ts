@@ -12,8 +12,8 @@ const COGNITO_CONFIG: ResourcesConfig = {
         oauth: {
           domain: process.env.NEXT_PUBLIC_DOMAIN as string,
           scopes: ['openid', 'email', 'profile'],
-          redirectSignIn: ['http://localhost:3000/'],
-          redirectSignOut: ['http://localhost:3000/'],
+          redirectSignIn: [process.env.NEXT_PUBLIC_APP_URL as string],
+          redirectSignOut: [process.env.NEXT_PUBLIC_APP_URL as string],
           responseType: 'code',
           providers: ['Google'],
         },

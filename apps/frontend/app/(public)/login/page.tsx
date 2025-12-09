@@ -37,12 +37,12 @@ export default function LoginPage() {
         password: data.password,
       };
       await signIn(signInInput);
-      router.push(redirect || '/choose-team');
+      router.push(redirect || '/choose-team/');
     } catch (err) {
       if (isAmplifyAuthError(err)) {
         if (err.name === 'UserAlreadyAuthenticatedException') {
           addAlert(`既にログイン済みです`, 'error');
-          router.push(redirect || '/choose-team');
+          router.push(redirect || '/choose-team/');
         } else {
           addAlert(`ログインに失敗しました\n${err.message}`, 'error');
         }
@@ -98,7 +98,7 @@ export default function LoginPage() {
           </AppCardButton>
         </div>
         <div className="flex items-center justify-center rounded-b-md bg-gray-100 p-4">
-          <Link href="/signup" className="text-center text-sm text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700">
+          <Link href="/signup/" className="text-center text-sm text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700">
             初めてのご利用の方
           </Link>
         </div>

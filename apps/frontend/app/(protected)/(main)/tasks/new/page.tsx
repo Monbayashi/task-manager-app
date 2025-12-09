@@ -50,7 +50,7 @@ export default function TasksNewPage() {
     try {
       const result = await trigger(submitData);
       addAlert('タスクを登録しました', 'success');
-      router.push(`/tasks/edit?teamId=${result.teamId}&taskId=${result.taskId}`);
+      router.push(`/tasks/edit/?teamId=${result.teamId}&taskId=${result.taskId}`);
     } catch (err) {
       console.error(err);
     }

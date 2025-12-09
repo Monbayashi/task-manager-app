@@ -109,8 +109,6 @@ AWS_COGNITO_CLIENT_ID=7oa3l9iv02dr6vv6du8b0aqehm
 ```
 # AWS
 AWS_REGION=ap-northeast-1
-AWS_SNS_ENDPOINT=http://localhost:4566
-AWS_SNS_TOPIC_ARN=arn:aws:sns:ap-northeast-1:000000000000:invitation-topic
 ```
 
 ### ROOTの配下でコマンド
