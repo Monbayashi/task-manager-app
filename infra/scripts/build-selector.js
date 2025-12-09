@@ -62,7 +62,7 @@ function runBuild() {
       const envVarsString = Object.entries(ENV_VARS)
         .map(([key, value]) => `${key}='${value}'`)
         .join(" ");
-      const localBuildCommand = `${envVarsString} pnpm build`;
+      const localBuildCommand = `${envVarsString} pnpm --filter=frontend... build`;
 
       // 実行コンテキストを apps/frontend に指定して実行
       execSync(localBuildCommand, {
