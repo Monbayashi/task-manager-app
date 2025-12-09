@@ -10,6 +10,6 @@ export class HealthController {
 
   @Get('api/healthz')
   healthzCheck() {
-    return { status: 'ok' };
+    return { status: 'ok!!' };
   }
 }

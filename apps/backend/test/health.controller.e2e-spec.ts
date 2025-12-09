@@ -27,6 +27,6 @@ describe('HealthController (e2e)', () => {
   });
 
   it('api/healthz (GET) success', () => {
-    return request(app.getHttpServer()).get('/api/healthz').expect(200).expect({ status: 'ok' });
+    return request(app.getHttpServer()).get('/api/healthz').expect(200).expect({ status: 'ok!!' });
   });
 });
