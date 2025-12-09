@@ -1,3 +1,41 @@
 {
-  "acknowledged-issue-numbers": [34892]
+  "acknowledged-issue-numbers": [
+    34892
+  ],
+  "vpc-provider:account=421748860658:filter.isDefault=true:region=ap-northeast-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-029ee5ae8a7c65302",
+    "vpcCidrBlock": "172.31.0.0/16",
+    "ownerAccountId": "421748860658",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0ba29e5c9e2cd07eb",
+            "cidr": "172.31.32.0/20",
+            "availabilityZone": "ap-northeast-1a",
+            "routeTableId": "rtb-053b1ebceeee6d60f"
+          },
+          {
+            "subnetId": "subnet-031e3cd70fdfb079f",
+            "cidr": "172.31.0.0/20",
+            "availabilityZone": "ap-northeast-1c",
+            "routeTableId": "rtb-053b1ebceeee6d60f"
+          },
+          {
+            "subnetId": "subnet-0a85b1a0e41595ea9",
+            "cidr": "172.31.16.0/20",
+            "availabilityZone": "ap-northeast-1d",
+            "routeTableId": "rtb-053b1ebceeee6d60f"
+          }
+        ]
+      }
+    ]
+  },
+  "hosted-zone:account=421748860658:domainName=joji-monbayashi.click:region=ap-northeast-1": {
+    "Id": "/hostedzone/Z0152847ZVWSV3N9LHTR",
+    "Name": "joji-monbayashi.click."
+  }
 }

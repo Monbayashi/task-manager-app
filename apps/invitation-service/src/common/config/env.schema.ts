@@ -9,8 +9,8 @@ export const envSchema = z.object({
   INVITATION_RETRY_TIMEOUT: z.string().regex(/^\d+$/).transform(Number),
   // AWS
   AWS_REGION: z.string().min(1),
-  AWS_SNS_ENDPOINT: z.string().optional(),
-  AWS_SNS_TOPIC_ARN: z.string().min(1),
+  AWS_SES_ENDPOINT: z.string().optional(),
+  AWS_SES_FROM_EMAIL: z.email(),
 });
 
 /** 環境変数 Type */

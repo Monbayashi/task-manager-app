@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DynamoDBRecord } from 'aws-lambda';
 import { TypedConfigService } from '../common/config/typed-config.service';
-import { SnsClientService } from '../shared/sns/sns-client.service';
+import { SesClientService } from '../shared/ses/ses-client.service';
 import { z, flattenError } from 'zod';
 
 const SUBJECT = '【招待】チームへの招待が届いています' as const;
@@ -28,7 +28,7 @@ export class InvitationService {
   private readonly logger = new Logger(InvitationService.name);
 
   constructor(
-    private readonly snsClient: SnsClientService,
+    private readonly sesClient: SesClientService,
     private readonly config: TypedConfigService
   ) {}
 
@@ -36,8 +36,8 @@ export class InvitationService {
   async sendInvitationMain(record: DynamoDBRecord) {
     this.logger.log({ msg: 'Invitation Service 起動' });
     const parseData = this.parse(record);
-    const snsMessge = this.createMessage(parseData);
-    const result = await this.snsClient.publish(SUBJECT, snsMessge, parseData.email);
+    const sesMessge = this.createMessage(parseData);
+    const result = await this.sesClient.publish(SUBJECT, sesMessge, parseData.email);
     this.logger.log({ msg: 'チーム招待メール送信成功', MessageId: result.MessageId, target: parseData });
     this.logger.log('Invitation Service 終了');
     return;
@@ -59,15 +59,23 @@ export class InvitationService {
     };
   }
 
-  /** SNSメッセージ作成 */
+  /** SESメッセージ作成 */
   private createMessage(parsedData: InvitationNewImageType): string {
     const url = new URL('/invitation', this.config.get('INVITATION_LINK_ORIGIN'));
     url.searchParams.set('teamId', parsedData.teamId);
     url.searchParams.set('inviteId', parsedData.inviteId);
     url.searchParams.set('token', parsedData.token);
     url.searchParams.set('teamName', parsedData.teamName);
-    return `チームに参加するには以下のURLを開いてください
-チーム名:【${parsedData.teamName}】
-URL: ${url}`;
+    return `
+<html>
+  <p>チームに参加するには以下のURLを開いてください。</p>
+  <br>
+  <p><strong>チーム名:</strong> ${parsedData.teamName}</p>
+  <br>
+  <p><strong>URL:</strong> <a href="${url}">${url}</a></p>
+  <br>
+  <p>※このメールに心当たりのない場合は破棄してください。</p>
+</html>
+    `;
   }
 }

@@ -6,7 +6,7 @@ module.exports = (options, webpack) => {
 
   return {
     ...options,
-    externals: ['@aws-sdk/client-sns'], // node_modules もバンドルする ※SDKv3は除外
+    externals: ['@aws-sdk/client-ses'], // node_modules もバンドルする ※SDKv3は除外
     target: 'node', // Node.js 向けにビルド
     devtool: 'source-map', // ソースマップ生成
     optimization: {

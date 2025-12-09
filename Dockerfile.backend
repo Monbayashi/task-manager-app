@@ -1,0 +1,35 @@
+# 1. Base Image Setup
+FROM node:24-alpine AS base
+RUN apk update && apk add --no-cache libc6-compat
+RUN corepack enable && corepack prepare pnpm@latest --activate
+WORKDIR /app
+
+
+# 2. Deployer Stage
+FROM base AS deployer
+# モノレポ必要な部分をコピー
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
+COPY apps/backend ./apps/backend
+COPY packages ./packages
+RUN pnpm install --frozen-lockfile --ignore-scripts
+# バックエンドアプリをビルド
+RUN pnpm --filter=backend... build
+WORKDIR /app
+RUN pnpm --filter=backend --prod deploy apps/deployed --legacy
+
+
+# 3. Runner Stage
+FROM node:24-alpine AS runner
+# 実行ユーザー設定
+RUN addgroup --system --gid 1001 nodejs \
+ && adduser --system --uid 1001 nest
+USER nest
+WORKDIR /app
+
+COPY --from=deployer --chown=nest:nodejs /app/apps/deployed/node_modules ./node_modules
+COPY --from=deployer --chown=nest:nodejs /app/apps/deployed/package.json ./package.json
+COPY --from=deployer --chown=nest:nodejs /app/apps/backend/dist ./dist
+
+
+EXPOSE 3001
+CMD ["node", "dist/main"]

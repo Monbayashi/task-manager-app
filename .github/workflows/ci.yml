@@ -64,6 +64,6 @@ jobs:
           AWS_DYNAMO_INVITATION_TABLE: task-table-invitation-v3
           AWS_COGNITO_USER_POOL_ID: ap-northeast-1_test
           AWS_COGNITO_CLIENT_ID: test_client_id
-          AWS_SNS_ENDPOINT: http://localhost:4567
-          AWS_SNS_TOPIC_ARN: aws_sns_topc_arn
+          AWS_SES_ENDPOINT: http://localhost:4567,
+          AWS_SES_FROM_EMAIL: noreply@joji-monbayashi.click
         run: pnpm turbo run test:ci --output-logs=errors-only
