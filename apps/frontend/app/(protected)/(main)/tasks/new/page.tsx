@@ -37,7 +37,7 @@ export default function TasksNewPage() {
   } = useForm<NewTaskFormType>({
     resolver: zodResolver(newTaskFormSchema),
     defaultValues: {
-      title: 'test',
+      title: '',
       status: 'todo',
       startTime: formatInTimeZone(new Date(), 'Asia/Tokyo', "yyyy-MM-dd'T'HH:mm"),
       endTime: formatInTimeZone(add(new Date(), { days: 7 }), 'Asia/Tokyo', "yyyy-MM-dd'T'HH:mm"),

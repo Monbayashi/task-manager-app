@@ -34,12 +34,12 @@ export class InvitationService {
 
   /** 招待メール送信処理 Main */
   async sendInvitationMain(record: DynamoDBRecord) {
-    this.logger.log({ msg: 'Invitation Service 起動' });
+    this.logger.log({ msg: 'Invitation Service v2 起動' });
     const parseData = this.parse(record);
     const sesMessge = this.createMessage(parseData);
     const result = await this.sesClient.publish(SUBJECT, sesMessge, parseData.email);
     this.logger.log({ msg: 'チーム招待メール送信成功', MessageId: result.MessageId, target: parseData });
-    this.logger.log('Invitation Service 終了');
+    this.logger.log('Invitation Service v2 終了');
     return;
   }
 
