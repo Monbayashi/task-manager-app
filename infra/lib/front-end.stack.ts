@@ -44,6 +44,8 @@ export class FrontendStack extends cdk.Stack {
       defaultBehavior: {
         origin: new cloudfrontOrigins.S3StaticWebsiteOrigin(bucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
       },
       additionalBehaviors: {
         "api/*": {
