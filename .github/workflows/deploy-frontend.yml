@@ -37,6 +37,9 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
 
+      - name: Install dependencies (root)
+        run: pnpm install --frozen-lockfile
+
       - name: Configure AWS Credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v5
         with:
