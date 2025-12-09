@@ -1,11 +1,10 @@
-// lib/frontend-stack.ts
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as cloudfrontOrigins from "aws-cdk-lib/aws-cloudfront-origins";
-import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2"; // ALBを参照するために必要
+import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as path from "path";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as route53Targets from "aws-cdk-lib/aws-route53-targets";
@@ -24,7 +23,7 @@ export class FrontendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: FrontendStackProps) {
     super(scope, id, props);
 
-    // ===== 2. S3 + CloudFront 作成 =====
+    // ===== S3 + CloudFront 作成 =====
     const bucket = new s3.Bucket(this, "SiteBucket", {
       websiteIndexDocument: "index.html",
       websiteErrorDocument: "index.html",
@@ -45,7 +44,20 @@ export class FrontendStack extends cdk.Stack {
         origin: new cloudfrontOrigins.S3StaticWebsiteOrigin(bucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-        originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
+        originRequestPolicy: new cloudfront.OriginRequestPolicy(
+          this,
+          "SpaOriginRequestPolicy",
+          {
+            originRequestPolicyName: "SPA-Query-Headers-Only",
+            queryStringBehavior:
+              cloudfront.OriginRequestQueryStringBehavior.all(),
+            cookieBehavior: cloudfront.OriginRequestCookieBehavior.all(),
+            headerBehavior: cloudfront.OriginRequestHeaderBehavior.allowList(
+              "Origin",
+              "Accept"
+            ),
+          }
+        ),
       },
       additionalBehaviors: {
         "api/*": {
@@ -72,7 +84,7 @@ export class FrontendStack extends cdk.Stack {
       ),
     });
 
-    // ===== 5. S3デプロイ =====
+    // S3デプロイ
     new s3deploy.BucketDeployment(this, "DeploySite", {
       sources: [
         s3deploy.Source.asset(path.join(__dirname, "../../apps/frontend/out")),

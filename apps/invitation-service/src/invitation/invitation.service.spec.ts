@@ -60,7 +60,7 @@ describe('InvitationService', () => {
     expect(mockSesPublish).toHaveBeenCalledWith('【招待】チームへの招待が届いています', expect.stringContaining('チームA'), 'test@example.com');
 
     const sentMessage = mockSesPublish.mock.calls[0][1];
-    expect(sentMessage).toContain('http://localhost:3000/invitation?');
+    expect(sentMessage).toContain('http://localhost:3000/invitation/?');
     expect(sentMessage).toContain('teamId=019ae856-d721-736a-bf4c-ea93833ee099');
     expect(sentMessage).toContain('inviteId=019aed22-e0dc-731c-aec0-9abb9c39a13d');
     expect(sentMessage).toContain(`token=${'a'.repeat(64)}`);

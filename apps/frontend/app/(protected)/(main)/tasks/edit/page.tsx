@@ -136,7 +136,7 @@ export default function TasksEditPage() {
     setIsDeleteOpen(false);
   };
   const onAfterDeleted = () => {
-    router.push(`/tasks?teamId=${teamId}`);
+    router.push(`/tasks/?teamId=${teamId}`);
   };
 
   // 初期値設定

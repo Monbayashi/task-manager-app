@@ -23,7 +23,7 @@ export default function InvitationPage() {
       if (!teamId || !token) return;
       const result = await trigger({ token: token });
       await mutateUser();
-      router.push(`/home?teamId=${result.teamId}`);
+      router.push(`/home/?teamId=${result.teamId}`);
     } catch (err) {
       console.error(err);
     }
@@ -35,7 +35,7 @@ export default function InvitationPage() {
     <AppCard
       title="チームへの招待"
       description="以下のチームから招待が届いています。参加する場合は参加ボタンをクリックしてください。"
-      cancel={{ text: 'キャンセル', link: '/choose-team' }}
+      cancel={{ text: 'キャンセル', link: '/choose-team/' }}
     >
       <div className="flex items-center gap-4 p-6 sm:p-8">
         <p className="text-lg text-gray-500">チーム名: </p>

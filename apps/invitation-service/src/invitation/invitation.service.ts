@@ -61,7 +61,7 @@ export class InvitationService {
 
   /** SESメッセージ作成 */
   private createMessage(parsedData: InvitationNewImageType): string {
-    const url = new URL('/invitation', this.config.get('INVITATION_LINK_ORIGIN'));
+    const url = new URL('/invitation/', this.config.get('INVITATION_LINK_ORIGIN'));
     url.searchParams.set('teamId', parsedData.teamId);
     url.searchParams.set('inviteId', parsedData.inviteId);
     url.searchParams.set('token', parsedData.token);

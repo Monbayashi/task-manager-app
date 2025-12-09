@@ -11,7 +11,7 @@
     "localstack:deploy:lambda": "cdklocal deploy LambdaStack --require-approval never --force -c env=local",
     "localstack:watch": "nodemon",
     "localstack:dev": "pnpm turbo build --filter=invitation-service && pnpm localstack:watch",
-    "deploy:pre-frontend": "cross-env NEXT_PUBLIC_API_URL=https://joji-monbayashi.click NEXT_PUBLIC_COGNITO_POOL_ID=ap-northeast-1_MD7zqiZga NEXT_PUBLIC_COGNITO_CLIENT_ID=7oa3l9iv02dr6vv6du8b0aqehm NEXT_PUBLIC_DOMAIN=ap-northeast-1md7zqizga.auth.ap-northeast-1.amazoncognito.com pnpm turbo build --filter=frontend",
+    "deploy:pre-frontend": "node ./scripts/build-selector.js",
     "deploy:pre-lambda": "pnpm turbo build --filter=invitation-service",
     "deploy:all": "pnpm deploy:pre-frontend && pnpm deploy:pre-lambda &&  && cdk deploy --all --require-approval never",
     "deploy:network": "cdk deploy NetworkStack --require-approval never",

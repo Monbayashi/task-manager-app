@@ -28,7 +28,7 @@ export default function NewTeamPage() {
       const result = await trigger(submitData);
       // ユーザデータ更新
       await mutateUser();
-      router.push(`/home?teamId=${result.teamId}`);
+      router.push(`/home/?teamId=${result.teamId}`);
     } catch (err) {
       console.error(err);
     }

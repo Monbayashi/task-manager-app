@@ -36,7 +36,7 @@ new LambdaStack(app, "LambdaStack", {
 if (!isLocal) {
   new CognitoStack(app, "CognitoStack", { env });
   const networkStack = new NetworkStack(app, "NetworkStack", { env });
-  // 2. バックエンドスタックを作成
+  // バックエンドスタックを作成
   const backendStack = new BackendStack(app, "BackendStack", {
     env,
     vpc: networkStack.vpc,
@@ -44,15 +44,13 @@ if (!isLocal) {
     alb: networkStack.alb,
     invitationTable: dynamoStack.invitationTable,
     taskTable: dynamoStack.taskTable,
-    // 👇 DOMAIN_NAME を渡す
     domainName: DOMAIN_NAME,
   });
 
-  // 3. フロントエンド/配信スタックを作成
+  // フロントエンド/配信スタックを作成
   new FrontendStack(app, "FrontendStack", {
     env,
     alb: networkStack.alb,
-    // 👇 DOMAIN_NAME と CERTIFICATE_ARN を渡す
     domainName: DOMAIN_NAME,
     certificateArn: CERTIFICATE_ARN,
   });

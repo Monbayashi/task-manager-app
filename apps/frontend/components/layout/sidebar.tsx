@@ -15,9 +15,9 @@ import { mutate } from 'swr';
 import { SelectBoxProps, Selectbox } from '../ui/selectbox';
 
 const NAV_ITEM = [
-  { href: '/home', icon: <HomeIcon className="size-5" />, title: 'ホーム' },
-  { href: '/tasks', icon: <ClipboardDocumentIcon className="size-5" />, title: 'タスク管理' },
-  { href: '/settings', icon: <Cog6ToothIcon className="size-5" />, title: 'チーム設定' },
+  { href: '/home/', icon: <HomeIcon className="size-5" />, title: 'ホーム' },
+  { href: '/tasks/', icon: <ClipboardDocumentIcon className="size-5" />, title: 'タスク管理' },
+  { href: '/settings/', icon: <Cog6ToothIcon className="size-5" />, title: 'チーム設定' },
 ];
 
 /**
@@ -38,7 +38,7 @@ export const SideBar = () => {
   /** ログアウト処理 */
   const onLogout = async () => {
     try {
-      router.push('/login');
+      router.push('/login/');
       await signOut();
       userLogout();
       mutate(() => true, undefined, { revalidate: true });
@@ -54,7 +54,7 @@ export const SideBar = () => {
 
   /** ユーザ設定画面に遷移 */
   const onUserSetting = async () => {
-    router.push('/user/settings');
+    router.push('/user/settings/');
   };
 
   /** チーム変更処理 */

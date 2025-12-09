@@ -17,22 +17,22 @@ import clsx from 'clsx';
 
 const REPLACE_TEAMID = ':teamId';
 const REPLACE_TASKID = ':taskId';
-const TEAM_HOME_PAGE = { Icon: HomeIcon, title: 'ホーム', href: `/home?teamId=${REPLACE_TEAMID}` } as const;
-const TEAM_TASK_PAGE = { Icon: ClipboardDocumentIcon, title: 'タスク管理', href: `/tasks?teamId=${REPLACE_TEAMID}` } as const;
-const TEAM_TASK_NEW_PAGE = { Icon: PlusCircleIcon, title: 'タスク登録', href: `/tasks/new?teamId=${REPLACE_TEAMID}` } as const;
+const TEAM_HOME_PAGE = { Icon: HomeIcon, title: 'ホーム', href: `/home/?teamId=${REPLACE_TEAMID}` } as const;
+const TEAM_TASK_PAGE = { Icon: ClipboardDocumentIcon, title: 'タスク管理', href: `/tasks/?teamId=${REPLACE_TEAMID}` } as const;
+const TEAM_TASK_NEW_PAGE = { Icon: PlusCircleIcon, title: 'タスク登録', href: `/tasks/new/?teamId=${REPLACE_TEAMID}` } as const;
 const TEAM_TASK_EDIT_PAGE = {
   Icon: PencilSquareIcon,
   title: 'タスク詳細',
-  href: `/tasks/edit?teamId=${REPLACE_TEAMID}&taskId=${REPLACE_TASKID}`,
+  href: `/tasks/edit/?teamId=${REPLACE_TEAMID}&taskId=${REPLACE_TASKID}`,
 } as const;
-const TEAM_SETTING_PAGE = { Icon: Cog6ToothIcon, title: 'チーム設定', href: `/settings?teamId=${REPLACE_TEAMID}` } as const;
+const TEAM_SETTING_PAGE = { Icon: Cog6ToothIcon, title: 'チーム設定', href: `/settings/?teamId=${REPLACE_TEAMID}` } as const;
 
 const BREADCRUMBS_LIST = {
-  '/home': [TEAM_HOME_PAGE],
-  '/tasks': [TEAM_TASK_PAGE],
-  '/tasks/new': [TEAM_TASK_PAGE, TEAM_TASK_NEW_PAGE],
-  '/tasks/edit': [TEAM_TASK_PAGE, TEAM_TASK_EDIT_PAGE],
-  '/settings': [TEAM_SETTING_PAGE],
+  '/home/': [TEAM_HOME_PAGE],
+  '/tasks/': [TEAM_TASK_PAGE],
+  '/tasks/new/': [TEAM_TASK_PAGE, TEAM_TASK_NEW_PAGE],
+  '/tasks/edit/': [TEAM_TASK_PAGE, TEAM_TASK_EDIT_PAGE],
+  '/settings/': [TEAM_SETTING_PAGE],
 } as const;
 
 const isBreadcrumbKey = (path: string): path is keyof typeof BREADCRUMBS_LIST => {

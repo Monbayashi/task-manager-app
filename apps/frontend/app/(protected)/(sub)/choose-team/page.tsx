@@ -12,7 +12,7 @@ export default function ChooseTeamPage() {
   const userData = useUserStore((s) => s.user);
 
   const teams = userData?.teams || [];
-  const redirect = pathParams.get('redirect') || 'home';
+  const redirect = pathParams.get('redirect') || '/home/';
 
   return (
     <AppCard title="チーム選択" description="表示するチーム選択してください">
@@ -30,7 +30,7 @@ export default function ChooseTeamPage() {
         ))}
         <button
           type="button"
-          onClick={() => router.push('/new-team')}
+          onClick={() => router.push('/new-team/')}
           className="flex w-full cursor-pointer items-center justify-center p-6 font-bold text-gray-800 hover:bg-green-50 sm:text-lg"
         >
           <PlusCircleIcon className="mr-2 size-8 text-green-800" />

@@ -1,4 +1,3 @@
-// lib/backend-stack.ts
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";

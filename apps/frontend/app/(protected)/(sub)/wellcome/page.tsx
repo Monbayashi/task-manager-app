@@ -30,7 +30,7 @@ export default function WellcomePage() {
     try {
       const { teamId } = await trigger(submitData);
       await mutateUser();
-      router.push(`/home?teamId=${teamId}`);
+      router.push(`/home/?teamId=${teamId}`);
     } catch (err) {
       console.error(err);
     }

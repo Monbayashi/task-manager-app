@@ -31,7 +31,7 @@ export default function ProtectedLayout({
       } catch (err) {
         console.error(err);
         const redirectURL = encodeURIComponent(`${pathName}?${pathParams.toString()}`);
-        router.push(`/login?redirect=${redirectURL}`);
+        router.push(`/login/?redirect=${redirectURL}`);
       } finally {
         setIsLoadingLogined(true);
       }
@@ -43,10 +43,10 @@ export default function ProtectedLayout({
   useEffect(() => {
     if (stauts === 'done') {
       if (!user) {
-        router.push(`/wellcome`);
+        router.push(`/wellcome/`);
         setTimeout(() => setIsLoadingExsisted(true), 500);
       } else if (user.teams.length === 0) {
-        router.push('/new-team');
+        router.push('/new-team/');
         setTimeout(() => setIsLoadingExsisted(true), 500);
       }
       setTimeout(() => setIsLoadingExsisted(true), 500);
