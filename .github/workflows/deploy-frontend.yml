@@ -27,14 +27,15 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
 
+      - name: Install pnpm
+        run: npm install -g pnpm@latest
+
       - name: Setup pnpm and Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: "pnpm"
-
-      - name: Install dependencies (root)
-        run: pnpm install --frozen-lockfile
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Configure AWS Credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v5
