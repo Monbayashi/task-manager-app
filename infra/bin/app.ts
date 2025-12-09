@@ -14,7 +14,6 @@ const CERTIFICATE_ARN =
   "arn:aws:acm:us-east-1:421748860658:certificate/c97cc231-7fee-425e-806c-c928fc3441f8";
 
 // コンテキストから環境を取得
-const deployTarget = app.node.tryGetContext("deploy-stack") || "All";
 const envKey = app.node.tryGetContext("env") || "local";
 const isLocal = envKey === "local";
 
@@ -38,27 +37,23 @@ if (!isLocal) {
   new CognitoStack(app, "CognitoStack", { env });
   const networkStack = new NetworkStack(app, "NetworkStack", { env });
   // バックエンドスタックを作成
-  if (deployTarget === "Backend" || deployTarget === "All") {
-    new BackendStack(app, "BackendStack", {
-      env,
-      vpc: networkStack.vpc,
-      cluster: networkStack.cluster,
-      alb: networkStack.alb,
-      invitationTable: dynamoStack.invitationTable,
-      taskTable: dynamoStack.taskTable,
-      domainName: DOMAIN_NAME,
-    });
-  }
+  new BackendStack(app, "BackendStack", {
+    env,
+    vpc: networkStack.vpc,
+    cluster: networkStack.cluster,
+    alb: networkStack.alb,
+    invitationTable: dynamoStack.invitationTable,
+    taskTable: dynamoStack.taskTable,
+    domainName: DOMAIN_NAME,
+  });
 
   // フロントエンド/配信スタックを作成
-  if (deployTarget === "Frontend" || deployTarget === "All") {
-    new FrontendStack(app, "FrontendStack", {
-      env,
-      alb: networkStack.alb,
-      domainName: DOMAIN_NAME,
-      certificateArn: CERTIFICATE_ARN,
-    });
-  }
+  new FrontendStack(app, "FrontendStack", {
+    env,
+    alb: networkStack.alb,
+    domainName: DOMAIN_NAME,
+    certificateArn: CERTIFICATE_ARN,
+  });
 }
 
 app.synth();
