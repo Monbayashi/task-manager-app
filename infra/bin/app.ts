@@ -27,13 +27,11 @@ const env = {
 const dynamoStack = new DynamoDBStack(app, "DynamoDBStack", { env });
 
 // LambdaはinvitationTableのStreamを監視
-if (deployTarget === "Lambda" || deployTarget === "All") {
-  new LambdaStack(app, "LambdaStack", {
-    env,
-    table: dynamoStack.invitationTable,
-    domainName: DOMAIN_NAME,
-  });
-}
+new LambdaStack(app, "LambdaStack", {
+  env,
+  table: dynamoStack.invitationTable,
+  domainName: DOMAIN_NAME,
+});
 
 // 本番専用: localstack不可
 if (!isLocal) {
