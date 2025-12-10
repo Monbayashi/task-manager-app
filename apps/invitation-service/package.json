@@ -12,7 +12,7 @@
     "test:ci": "cross-env NODE_ENV=test jest",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\"",
-    "localstack:dev": "aws logs tail /aws/lambda/InvitationHandler --follow --endpoint-url http://localhost:4566"
+    "localstack:dev": "pnpm build:watch"
   },
   "turbo": {
     "outputs": [
