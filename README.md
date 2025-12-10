@@ -1,150 +1,195 @@
-# タスク管理アプリケーション
+# Task Manager App
 
-ポートフォリオ用に作成
+**本番環境（Frontend）**  
+https://joji-monbayashi.click/
 
-## 概要
+**テスト用アカウント（maildrop.ccを使用）**
 
-turborepoを使ってモノリポ構成で作成
+| ユーザー名   | メールアドレス                        | パスワード  | メール受信リンク                                             |
+| ------------ | ------------------------------------- | ----------- | ------------------------------------------------------------ |
+| TEST-USER-01 | monbayashi-test1-x8f2mkq9@maildrop.cc | T3st!User01 | https://maildrop.cc/inbox/?mailbox=monbayashi-test1-x8f2mkq9 |
+| TEST-USER-02 | monbayashi-test2-x8f2mkq9@maildrop.cc | T3st!User02 | https://maildrop.cc/inbox/?mailbox=monbayashi-test2-x8f2mkq9 |
 
-## フォルダ構造
+**招待メール動作確認**  
+SESサンドボックスモードのため、招待先メールアドレスは事前にSESコンソールで認証済みである必要があります（上記テストユーザー宛はOK）。
 
-```
-.
-├── .husky/
-│   └── pre-commit
-├── .vscode/
-│   └── settings.json
-├── apps/                   # アプリケーション
-│   ├── backend/            # Nestjs (ECS Fargate Spot)
-│   │   └── ...
-│   ├── frontend/           # Nextjs SPA (S3)
-│   │   └── ...
-│   └── invitation-service/ # Nestjs Standalone (Lambda) ※DyanmoDB Streamにて起動
-│       └── ...
-├── packages/               # 共通ライブラリ
-│   ├── api-models/
-│   │   └── ...
-│   ├── eslint-config/
-│   │   └── ...
-│   ├── jest-config/
-│   │   └── ...
-│   ├── typescript-config/
-│   │   └── ...
-│   └── types/
-│       └── ...
-├── infra/                  # インフラ (CDK, Localstack)
-│   ├── bin/
-│   │   └── app.ts
-│   ├── lib/
-│   │   ├── dynamodb-stack.ts
-│   │   └── lambda-stack.ts
-│   ├── cdk.json
-│   └── package.json
-├── docker-compose.yml
-├── package.json
-├── pnpm-workspace.yaml
-├── README.md
-├── turbo.json
-└── ...
-```
+## プロジェクト概要
 
-## 開発環境に必要物
+Turborepo で管理されたモノレポ構成のタスク管理フルスタックアプリケーションです。  
+ポートフォリオ用に、フロントエンドからバックエンド、インフラ（IaC）まで一貫して自分で構築したことをアピールするために作成しました。
 
-| ソフト          | 説明                       | リンク                                                                                |
-| --------------- | -------------------------- | ------------------------------------------------------------------------------------- |
-| vscode          | エディター                 | https://code.visualstudio.com/download                                                |
-| docker          | Dynamo用                   | https://docs.docker.jp/desktop/install/windows-install.html                           |
-| NoSQL Workbench | Dynamo用                   | https://docs.aws.amazon.com/ja_jp/amazondynamodb/latest/developerguide/workbench.html |
-| Volta           | Nodeバージョンマネージャー | https://docs.volta.sh/guide/getting-started                                           |
-| node (volta)    | v22以上                    | volta install node #最新のLTS取得                                                     |
-| pnpm (in Volta) | v10以上                    | volta install pnpm #最新のpnpm                                                        |
-| git             | バージョン管理             | https://git-scm.com/install                                                           |
-| aws cli         | AWS用                      | https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html   |
+- モダンなモノレポ開発（Turborepo + pnpm）
+- TypeScript による型安全なフルスタック実装
+- AWS サーバーレス／コンテナ混合アーキテクチャ
+- LocalStack による完全ローカル開発環境の再現
 
-## 開発作業手順
+## 主な機能
 
-### ENVファイルを作成
+- タスクのCRUD（作成・一覧・更新・削除）
+- チーム管理（作成・一覧・更新・削除予定）
+- チームタグの管理（作成・一覧・更新・削除）
+- 優先度・期限・ステータス管理
+- AWS Cognitoによる認証（メール/パスワード + Googleログイン対応）
+- メール招待によるユーザーコラボレーション（DynamoDB Stream → Lambda → SES）
+- タスクの検索・フィルタリング（ステータス、期間、日付ソート）
 
-#### apps/frontend/.env
+## 技術スタック
+
+| カテゴリ       | 技術詳細                                       |
+| -------------- | ---------------------------------------------- |
+| フロントエンド | Next.js (App Router), TypeScript, Tailwind CSS |
+| バックエンド   | NestJS (ECS Fargate Spot で稼働)               |
+| 招待サービス   | NestJS Standalone (AWS Lambda)                 |
+| データベース   | Amazon DynamoDB                                |
+| 認証           | Amazon Cognito                                 |
+| インフラ       | AWS CDK (TypeScript), LocalStack               |
+| デプロイ       | S3 (フロント), ECS Fargate Spot, Lambda        |
+| パッケージ管理 | pnpm Workspaces + Turborepo                    |
+| テスト・Lint   | Jest, ESLint, Prettier, Husky                  |
+
+## 全体構成
 
 ```
-# 担当者に聞いてください。
-NEXT_PUBLIC_COGNITO_POOL_ID=
-NEXT_PUBLIC_COGNITO_CLIENT_ID=
-NEXT_PUBLIC_API_URL=
-NEXT_PUBLIC_DOMAIN=
-NEXT_COGNITO_ISSUER=
+/
+├── apps/
+│ ├── backend/    # NestJS API (ECS Fargate)
+│ ├── frontend/   # Next.js SPA (S3 + CloudFront)
+│ └── invitation/ # Invitation Lambda (SES)
+│
+├── infra/ # CDK のコード
+│
+├── packages/ # 共通パッケージ（DTO, utils など）
+│ ├── api-moddels       # frontend,backendで共通に使用する、Schemaや型を指定
+│ ├── eslint-config     # eslint
+│ ├── jset-config       # jest
+│ └── typescript-config # tsconfig
+│
+└── turbo.json # Turborepo 設定
 ```
 
-#### apps/backend/.env.develop
+## ローカル開発環境の立ち上げ
 
-```
-BACKEND_PREFIX=api
-BACKEND_PORT=3001
-# AWS
-AWS_REGION=ap-northeast-1
-AWS_DYNAMO_ENDPOINT=http://localhost:4566
-AWS_DYNAMO_TASK_TABLE=task-table-v3
-AWS_DYNAMO_INVITATION_TABLE=task-table-invitation-v3
-AWS_COGNITO_USER_POOL_ID=ap-northeast-1_MD7zqiZga
-AWS_COGNITO_CLIENT_ID=7oa3l9iv02dr6vv6du8b0aqehm
-```
+### ローカル環境必要な設定
 
-#### apps/backend/.env.test
-
-```
-BACKEND_PREFIX=api
-BACKEND_PORT=3001
-# AWS
-AWS_REGION=ap-northeast-1
-AWS_DYNAMO_ENDPOINT=http://localhost:4566
-AWS_DYNAMO_TASK_TABLE=task-table-v3
-AWS_DYNAMO_INVITATION_TABLE=task-table-invitation-v3
-AWS_COGNITO_USER_POOL_ID=ap-northeast-1_MD7zqiZga
-AWS_COGNITO_CLIENT_ID=7oa3l9iv02dr6vv6du8b0aqehm
-```
-
-#### apps/invitation-service/.env.test
-
-```
-# AWS
-AWS_REGION=ap-northeast-1
-```
-
-### ROOTの配下でコマンド
-
-```
-# ========== 初回のみ ==========
+```bash
+# リポジトリをクローン
 git clone https://github.com/Monbayashi/task-manager-app.git
+cd task-manager-app
 
-# 依存環境インストール
+# 依存関係インストール
 pnpm install
+```
 
-# ビルド (localstack起動に必要)
-pnpm turbo build
+### 環境変数 (作成)
 
-# ========== 起動毎 ==========
-# localstack 起動 + DyanamoDB, Lambdaの初期デプロイ
+※ポートフォリオ用に起動できるように記載しています。
+
+#### backend (.env.development, .env.test)
+
+```
+# --------------- apps/backend/.env.development ---------------
+BACKEND_PREFIX=api
+BACKEND_PORT=3001
+BACKEND_LOG_LEVEL=info
+BACKEND_CORS_ORIGIN=http://localhost:3000,http://127.0.0.1:3000
+AWS_ACCESS_KEY_ID=dummy
+AWS_SECRET_ACCESS_KEY=dummy
+AWS_REGION=ap-northeast-1
+AWS_DYNAMO_ENDPOINT=http://localhost:4566
+AWS_DYNAMO_TASK_TABLE=task-table-v3
+AWS_DYNAMO_INVITATION_TABLE=task-table-invitation-v3
+AWS_COGNITO_USER_POOL_ID=ap-northeast-1_MD7zqiZga
+AWS_COGNITO_CLIENT_ID=7oa3l9iv02dr6vv6du8b0aqehm
+
+# --------------- apps/backend/.env.test ---------------
+BACKEND_PREFIX=api
+BACKEND_PORT=3001
+BACKEND_LOG_LEVEL=silent
+BACKEND_CORS_ORIGIN=http://localhost:3000,http://127.0.0.1:3000
+AWS_ACCESS_KEY_ID=dummy
+AWS_SECRET_ACCESS_KEY=dummy
+AWS_REGION=ap-northeast-1
+AWS_DYNAMO_ENDPOINT=http://localhost:4567
+AWS_DYNAMO_TASK_TABLE=task-table-v3
+AWS_DYNAMO_INVITATION_TABLE=task-table-invitation-v3
+AWS_COGNITO_USER_POOL_ID=ap-northeast-1_test
+AWS_COGNITO_CLIENT_ID=test_client
+```
+
+#### frontend (.env.development)
+
+```
+# --------------- apps/frontend/.env.development ---------------
+NEXT_PUBLIC_COGNITO_POOL_ID=ap-northeast-1_MD7zqiZga
+NEXT_PUBLIC_COGNITO_CLIENT_ID=7oa3l9iv02dr6vv6du8b0aqehm
+NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_APP_URL=http://localhost:3000/
+NEXT_PUBLIC_DOMAIN=ap-northeast-1md7zqizga.auth.ap-northeast-1.amazoncognito.com
+```
+
+#### invitation-service (.env.local)
+
+```
+# --------------- apps/invitation-service/.env.local ---------------
+INVITATION_LOG_LEVEL=silent
+INVITATION_LINK_ORIGIN=http://localhost:3000
+INVITATION_RETRY_TIMEOUT=1
+AWS_ACCESS_KEY_ID=dummy
+AWS_SECRET_ACCESS_KEY=dummy
+AWS_REGION=ap-northeast-1
+AWS_SES_ENDPOINT=http://localhost:4566
+AWS_SES_FROM_EMAIL=noreply@joji-monbayashi.click
+```
+
+#### 起動コマンド
+
+```bash
+# 1. LocalStack（AWSローカルエミュレータ）起動
 pnpm localstack:up
 
-# frontend,backend 起動
-pnpm turbo dev --filter=frontend
-pnpm turbo dev --filter=backend
-
-# invitation-service 起動 (CloudWatchのログ確認 + build度に自動デプロイ)
-# ※チーム招待をすることでログが出ることを確認できる。
-pnpm localstack:dev
-
+# 2. 各アプリを開発モードで起動
+# ターミナルを4つ開いて以下を実行
+pnpm turbo dev --filter=frontend      # http://localhost:3000
+pnpm turbo dev --filter=backend       # http://localhost:3001
+# ※ログが文字化けする場合は、cd apps/backend && pnpm dev
+pnpm localstack:dev                   # 招待用Lambda（自動ビルド & deploy）
+docker-compose logs -f                # DcokerComposeのログ
 ```
 
-## コメントのタグ一覧
+#### 起動確認
 
-| タグ        | 説明               |
-| ----------- | ------------------ |
-| TODO        | 後でやること       |
-| FIXME       | 今すぐ直したい問題 |
-| NOTE / INFO | 補足説明や背景情報 |
-| HACK        | 苦肉の策コード     |
-| BUG         | 明確なバグ         |
-| REFACTOR    | リファクタ対象     |
-| OPTIMIZE    | パフォーマンス改善 |
+1. localhost:3000にアクセス (ログインページ表示)
+2. テスト用アカウントでログイン (TEST-USER-01)
+3. wellcomページで新規ユーザ登録
+4. チーム設定画面に遷移 -> チーム招待 (monbayashi-test2-x8f2mkq9@maildrop.cc)
+5. DockerComposeのログに"チーム 招待メール送信成功"が表示される。
+
+## CI / CD
+
+このリポジトリでは GitHub Actions を利用して CI / CD を実装しています。
+
+※ https://github.com/Monbayashi/task-manager-app/actions
+
+### CI（自動テスト）
+
+`main` ブランチへの push および Pull Request に対して以下の CI が自動実行されます：
+
+- Node.js のセットアップ
+- pnpm 依存関係のインストール
+- LocalStack（DynamoDB）を利用した統合テスト
+- TurboRepo による test:ci の実行
+
+CI ワークフロー: `.github/workflows/ci-test.yml`
+
+### CD（デプロイ）
+
+デプロイは GitHub Actions の 手動で`workflow_dispatch` で実行します。  
+AWS アクセスキーは不要で、GitHub → AWS の **OIDC** を利用しています。
+
+※ `main`ブランチでのみ実行可能
+
+| カテゴリ       | 技術詳細                                  |
+| -------------- | ----------------------------------------- |
+| フロントエンド | `.github/workflows/deploy-frontend.yml`   |
+| バックエンド   | `.github/workflows/deploy-backend.yml`    |
+| 招待サービス   | `.github/workflows/deploy-invitation.yml` |
