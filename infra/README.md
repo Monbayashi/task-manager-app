@@ -1,57 +1,34 @@
-# インフラ
+# Infrastructure (AWS CDK)
 
-## 概要
+AWS CDK (TypeScript) で記述されたインフラストラクチャ定義です。  
+このプロジェクトの全リソース（VPC、ECS Fargate、Lambda、DynamoDB、Cognito、S3+CloudFrontなど）をコードで管理しています。
 
-## フォルダ構成
+| カテゴリ  | 技術詳細             |
+| --------- | -------------------- |
+| IaCツール | AWS CDK (TypeScript) |
+
+## フォルダ構造
 
 ```
-.
-├── .bin/
-│   └── app.ts
+infra/
+├── bin/
+│   └── app.ts                    # CDKアプリのエントリーポイント
 ├── lib/
-│   ├── dynamodb-stack.ts
-│   └── lambda-stack.ts
-├── cdk.json
-├── package.json
-└── tsconfig.json
+│   ├── backend.stack.ts
+│   ├── cognito.stack.ts
+│   ├── dynamodb.stack.ts
+│   ├── frontend.stack.ts
+│   └── lambda.stack.ts
+│   └── network.stack.ts
+├── scripts/                      # frontend用のbuildスクリプト (next.jsのbuildにバグあり)
+├── cdk.json                      # CDK設定（app、contextなど）
+└── package.json                  # 依存関係
 ```
 
-## 使用ライブラリ
+※ nextjs バグissue: https://github.com/vercel/next.js/issues/85374
 
-| ライブラリ名  | バージョン | 説明                                                  |
-| ------------- | ---------- | ----------------------------------------------------- |
-| aws-cdk       | 2.1031.2   | AWSのインフラをコード（コード）で定義・構築・管理する |
-| aws-cdk-local | ^3.0.1     | LocalStack用のCDKラッパー                             |
+## 注意点
 
-# 動作確認用コマンド
-
-```
-# table一覧取得
-aws dynamodb list-tables --endpoint-url=http://localhost:4566
-
-# lambda一覧取得
-aws lambda list-functions --endpoint-url=http://localhost:4566
-
-# cloudwatch logsのLog group名一覧
-aws logs describe-log-groups --endpoint-url=http://localhost:4566
-
-# lambdaのログ確認
-aws logs tail /aws/lambda/InvitationHandler --follow --endpoint-url http://localhost:4566
-
-# lambdaの起動確認 (lambdaのログが出力される)
-aws dynamodb put-item   --table-name task-table-invitation-v3   --item "{
-    \"PK\": {\"S\": \"TEAM#t4\"},
-    \"SK\": {\"S\": \"INVITE#i20\"},
-    \"type\": {\"S\": \"invitation\"},
-    \"email\": {\"S\": \"test1@example.com\"},
-    \"role\": {\"S\": \"member\"},
-    \"createdAt\": {\"N\": \"$(date +%s)\"},
-    \"expiresAt\": {\"N\": \"$(date -d '+7 day' +%s)\"},
-    \"invitedBy\": {\"S\": \"USER#u1\"}
-  }"   --return-consumed-capacity TOTAL   --endpoint-url http://localhost:4566
-```
-
-※ Git Bashを使っていて"/aws/lambda/InvitationHandler"が想定の通り動かない場合以下を実行する必要がある。
-export MSYS_NO_PATHCONV=1
-※ 戻す場合は以下
-unset MSYS_NO_PATHCONV
+- ローカルでデプロイするには適切なAWS権限が必要です。
+  - Github Actionsでデプロイする想定
+  - 初回のbootstrapの時に必要な場合があるが基本不要

@@ -203,3 +203,11 @@ AWS アクセスキーは不要で、GitHub → AWS の **OIDC** を利用して
 | 招待サービス        | `.github/workflows/deploy-invitation.yml` | Invitation Service デプロイ                             |
 | **Cron デプロイ**   | `.github/workflows/cron-deploy-all.yml`   | **（毎朝9:00 JST）夜間停止したリソースの再構築**        |
 | **Cron デストロイ** | `.github/workflows/cron-destroy-all.yml`  | **（毎晩23:00 JST）コスト削減のためのリソース完全削除** |
+
+## AWSの構成図
+
+[AWS構成図のドキュメントを見る](docs/aws-architecture.md)
+
+## DynamoDBの設計
+
+[DynamoDBの設計](docs/dynamodb-architecture.md)

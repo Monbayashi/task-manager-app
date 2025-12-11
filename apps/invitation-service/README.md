@@ -1,38 +1,57 @@
-# Invitation Service
+# Invitation Service (AWS Lambda)
 
-## 概要
+招待メール送信専用の NestJS スタンドアロンアプリケーションです。  
+DynamoDB Stream トリガーにより起動され、AWS SES 経由で招待リンクを送信します。
 
-チームに参加招待を送信する処理
+## 技術スタック
 
-```mermaid
+| カテゴリ       | 技術詳細                         |
+| -------------- | -------------------------------- |
+| フレームワーク | NestJS (Standalone)              |
+| メール送信     | AWS SES (AWS SDK v3)             |
+| ログ           | Pino                             |
+| デプロイ       | AWS Lambda (GitHub Actions 経由) |
+
+## フォルダ構造（主な部分）
 
 ```
-
-※ Nestjsはスタンドアロンアプリで作成。※ buildはwebpackでバンドル
-
-## フォルダ構成
-
-```
-.
-├── .src/
-│   ├──invitaion/
-│   │   ├── invitaion.service.spec.ts
-│   │   └── invitation.service.ts
+invitation-service/
+├── src/
+│   ├── common/                       # 共通ユーティリティ
+│   │   ├── config/                   #  - 環境変数モジュール
+│   │   └── logger/                   #  - Logger (Pino)
+│   ├── invitation/
+│   │   └── invitation.service.ts     # メイン処理
+│   ├── shared/                       # 共通ユーティリティ
 │   ├── app.module.ts
 │   └── main.ts
-├── nest-cli.json
-├── webpack.config.js
-├── package.json
-└── tsconfig.json
+├── test/
+├── .env.local                        # 環境変数例
+├── package.json                      # 依存関係
+└── webpack.config.js                 # webpackバンドル
 ```
 
-## 使用ライブラリ
+## ローカル開発
 
-| ライブラリ名 | バージョン | 説明                                                            |
-| ------------ | ---------- | --------------------------------------------------------------- |
-| nestjs       | 11.0.1     | バックエンドフレームワーク (スタンドアロンアプリケーション可能) |
-| aws-lambda   | 1.0.7      |                                                                 |
+```bash
+# 開発モード起動
+pnpm dev
+```
 
-## テスト範囲
+API: http://localhost:3001/api
 
-xxxx.service.tsのみテスト
+## テスト
+
+```bash
+pnpm test
+```
+
+### カバレッジ範囲
+
+```
+collectCoverageFrom: [
+  "./src/**/*.ts",
+  "!./src/**/*.test.ts",
+  "!./src/**/*.spec.ts",
+],
+```

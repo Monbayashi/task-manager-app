@@ -1,38 +1,74 @@
-# フロントエンド
+# Frontend (Next.js)
 
-## 概要
+Next.js (App Router) で実装されたタスク管理アプリケーションのフロントエンドです。  
+S3 + CloudFront でホスティングされ、本番環境は https://joji-monbayashi.click で動作しています。
 
-Nextjsの[静的エクスポート](http://nextjs.org/docs/app/guides/single-page-applications#static-export-optional)を使用。
+## 技術スタック
 
-## フォルダ構成
+| カテゴリ        | 技術詳細                             |
+| --------------- | ------------------------------------ |
+| フレームワーク  | Next.js 16 (App Router)              |
+| UI/スタイリング | Tailwind CSS, Headless UI, Heroicons |
+| 認証            | AWS Amplify (Cognito)                |
+| データフェッチ  | SWR                                  |
+| 状態管理        | Zustand                              |
+| フォーム        | React Hook Form + Zod                |
+| テスト          | Jest                                 |
+
+## フォルダ構造（主な部分）
 
 ```
-.
-├── .src/
-│   └── ...
-├── package.json
-└── tsconfig.json
+frontend/
+├── api/                      # api関連 hooks
+├── app/                      # App Routerページ
+│   ├── ...                   # 各ページ
+│   ├── layout.tsx            # ルートレイアウト
+│   └── page.tsx              # ホーム
+├── components/               # 共通コンポーネント
+│   ├── layout/               #  - ヘッダーやサイドメニューなど
+│   └── ui/                   #  - inputやiconやdialogなど
+├── lib/                      # ユーティリティ (テストするものをここに配置)
+│   ├── schemas/              #  - React Hook Formy用のスキーマ
+│   ├── cognit-utils.ts       #  - Cognito関連のユーティリティ
+│   └── date-utils.ts         #  - Date関連のユーティリティ
+├── public/                   # 静的アセット
+├── service/                  # ライブラリの設定など (amplify-client, api-clientなど)
+├── store/                    # Zustandストア
+├── styles/                   # グローバルCSS
+├── .env.development          # develop 環境変数
+└── package.json              # 依存関係
 ```
 
-## テスト範囲
+## ローカル開発
 
-libの配下のみをテスト。
+```bash
+# 開発モード起動
+pnpm dev
+```
 
-コンポーネントテストはe2e, カバーする。
+URL: http://localhost:3000
 
-## 使用ライブラリ
+## テスト
 
-| ライブラリ名      | バージョン | 説明                   |
-| ----------------- | ---------- | ---------------------- |
-| next              | 16.0.1     |                        |
-| tailwindcss       | ^4         | CSS                    |
-| @headlessui/react | ^2.2.9     |                        |
-| @heroicons/react  | ^2.2.0     |                        |
-| aws-amplify       | ^6.15.7    | aws cognito ライブラリ |
-| zustand           | ^5.0.8     | グローバル状態管理     |
-| react-hook-form   | ^7.66.0    |                        |
+※ libの配下のみをテスト。
 
-## Z-index 階層設計
+```bash
+pnpm test
+```
+
+### カバレッジ範囲
+
+```
+collectCoverageFrom: [
+  "lib/**/*.ts",
+  "!lib/**/*.test.ts",
+  "!lib/**/*.spec.ts",
+],
+```
+
+## 設計
+
+### Z-index 階層設計
 
 | 階層 | 値の目安 | className             | 用途                                                             |
 | ---- | -------- | --------------------- | ---------------------------------------------------------------- |
