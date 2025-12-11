@@ -67,6 +67,14 @@ Turborepo で管理されたモノレポ構成のタスク管理フルスタッ�
 └── turbo.json # Turborepo 設定
 ```
 
+## 前提条件（必要なソフトウェア）
+
+- Node.js（v22以上、Volta推奨）
+- pnpm（v10以上）
+- Docker & Docker Compose
+- Git
+- VS Code
+
 ## ローカル開発環境の立ち上げ
 
 ### ローカル環境必要な設定
@@ -188,8 +196,10 @@ AWS アクセスキーは不要で、GitHub → AWS の **OIDC** を利用して
 
 ※ `main`ブランチでのみ実行可能
 
-| カテゴリ       | 技術詳細                                  |
-| -------------- | ----------------------------------------- |
-| フロントエンド | `.github/workflows/deploy-frontend.yml`   |
-| バックエンド   | `.github/workflows/deploy-backend.yml`    |
-| 招待サービス   | `.github/workflows/deploy-invitation.yml` |
+| カテゴリ            | 技術詳細                                  | 役割                                                    |
+| :------------------ | :---------------------------------------- | :------------------------------------------------------ |
+| フロントエンド      | `.github/workflows/deploy-frontend.yml`   | Frontend デプロイ                                       |
+| バックエンド        | `.github/workflows/deploy-backend.yml`    | Backend デプロイ                                        |
+| 招待サービス        | `.github/workflows/deploy-invitation.yml` | Invitation Service デプロイ                             |
+| **Cron デプロイ**   | `.github/workflows/cron-deploy-all.yml`   | **（毎朝9:00 JST）夜間停止したリソースの再構築**        |
+| **Cron デストロイ** | `.github/workflows/cron-destroy-all.yml`  | **（毎晩23:00 JST）コスト削減のためのリソース完全削除** |

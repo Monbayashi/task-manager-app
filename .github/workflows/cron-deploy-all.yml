@@ -1,0 +1,54 @@
+name: 09:00 JST - Scheduled Deploy (Resource Start)
+
+on:
+  # スケジュール実行 09:00 JST (UTC 00:00) に実行
+  schedule:
+    - cron: "0 0 * * *"
+  # 手動実行
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "デプロイ対象のブランチ名"
+        required: true
+        default: "main"
+
+env:
+  AWS_REGION: ap-northeast-1
+  IAM_ROLE_ARN: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+
+jobs:
+  deploy-all:
+    runs-on: ubuntu-latest
+
+    # OIDC認証に必須
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Install pnpm
+        run: npm install -g pnpm@latest
+
+      - name: Setup pnpm and Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies (root)
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ env.IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Build & Deploy All (CDK)
+        run: pnpm --filter infra deploy:all
