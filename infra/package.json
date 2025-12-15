@@ -17,7 +17,7 @@
     "deploy:backend": "pnpm deploy:pre-frontend && pnpm deploy:pre-lambda && cdk deploy BackendStack --require-approval never",
     "deploy:frontend": "pnpm deploy:pre-frontend && pnpm deploy:pre-lambda && cdk deploy FrontendStack --require-approval never",
     "deploy:lambda": "pnpm deploy:pre-frontend && pnpm deploy:pre-lambda && cdk deploy LambdaStack --require-approval never",
-    "destroy:all": "pnpm deploy:pre-frontend && pnpm deploy:pre-lambda && cdk destroy --all --force"
+    "destroy:all": "pnpm deploy:pre-frontend && pnpm deploy:pre-lambda && cdk destroy NetworkStack LambdaStack BackendStack FrontendStack --force"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",

@@ -7,7 +7,11 @@ export class DynamoDBStack extends cdk.Stack {
   public readonly taskTable: dynamodb.Table;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+    super(scope, id, {
+      ...props,
+      // スタック自体が削除されるのを防ぐ
+      terminationProtection: true,
+    });
 
     // ====================
     // 1. task-table-invitation-v3
