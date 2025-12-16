@@ -55,6 +55,7 @@ export default function UserSettingsPage() {
             <hr className="border-gray-300" />
             <p className="text-sm">ユーザ名の変更が反映されるまでに時間がかかる場合があります。</p>
             <InputField<UserSettingsFormType>
+              ariaLabel="ユーザ名称"
               name="userName"
               defaultValue={userData?.user.name}
               register={formDataChangeUser.register}

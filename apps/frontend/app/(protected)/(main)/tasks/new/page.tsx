@@ -106,10 +106,12 @@ export default function TasksNewPage() {
             const selected = tagsDatas.data?.tags.filter((p) => field.value.includes(p.tagId)) ?? [];
             return (
               <div>
-                <label className="block text-sm text-gray-800 sm:text-base">タグ</label>
+                <label htmlFor="tagId" className="block text-sm text-gray-800 sm:text-base">
+                  タグ
+                </label>
                 {errors.tagRefs?.message && <p className="text-sm text-red-500">{errors.tagRefs.message}</p>}
                 <Listbox value={selected} onChange={(newSelected) => field.onChange(newSelected.map((p) => p.tagId))} multiple>
-                  <ListboxButton className="flex items-center gap-2 rounded border px-3 py-2">
+                  <ListboxButton id="tagId" className="flex items-center gap-2 rounded border px-3 py-2">
                     {selected == null || selected.length === 0 ? (
                       <span className="px-2 text-sm text-gray-600">未選択</span>
                     ) : (
@@ -146,7 +148,9 @@ export default function TasksNewPage() {
           control={control}
           render={({ field }) => (
             <div>
-              <label className="inline-block text-sm text-gray-800 sm:text-base">説明</label>
+              <label htmlFor="mdEditor" className="inline-block text-sm text-gray-800 sm:text-base">
+                説明
+              </label>
               {errors.discription?.message && <p className="text-sm text-red-500">{errors.discription.message}</p>}
               <MDEditor
                 commands={[]}
@@ -155,6 +159,9 @@ export default function TasksNewPage() {
                 height={500}
                 onChange={(v) => field.onChange(v ?? '')}
                 data-color-mode="light"
+                textareaProps={{
+                  id: 'mdEditor',
+                }}
               />
             </div>
           )}

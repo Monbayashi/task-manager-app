@@ -35,8 +35,8 @@ export const AppDialog = ({ isOpen, title, description, children, type = 'defaul
           <DialogTitle as="h3" className={clsx('mb-6 flex items-center justify-between border-b border-gray-400 pb-2 text-lg font-bold', titleColor)}>
             {title}
             <button
+              aria-label="モーダルを閉じる"
               type="button"
-              name="クローズダイアログ"
               className={clsx(
                 'rounded-md border border-slate-300 p-2.5 text-center text-sm text-gray-600 ring-orange-400 transition-all duration-100 outline-none',
                 'hover:border-gray-200 hover:bg-gray-200 focus:border-gray-200 focus:bg-gray-200 focus:ring-2',

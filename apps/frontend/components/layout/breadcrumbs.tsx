@@ -77,16 +77,20 @@ export const Breadcrumbs = () => {
               <span className="mx-3 text-gray-800 md:mx-5">
                 <ChevronRightIcon className="size-3" />
               </span>
-              <Link
-                href={href}
-                className={clsx(
-                  '-px-2 flex items-center rounded-md ring-orange-400 outline-none hover:underline focus:ring-2',
-                  isLast ? 'text-blue-800' : 'text-gray-800'
-                )}
-              >
-                <item.Icon className="size-5 md:size-6" />
-                <span className="mx-2 text-base md:text-lg">{item.title}</span>
-              </Link>
+              {isLast ? (
+                <span className={clsx('-px-2 flex items-center rounded-md text-gray-800 ring-orange-400 outline-none')}>
+                  <item.Icon className="size-5 md:size-6" />
+                  <span className="mx-2 text-base md:text-lg">{item.title}</span>
+                </span>
+              ) : (
+                <Link
+                  href={href}
+                  className={clsx('-px-2 flex items-center rounded-md text-blue-800 ring-orange-400 outline-none hover:underline focus:ring-2')}
+                >
+                  <item.Icon className="size-5 md:size-6" />
+                  <span className="mx-2 text-base md:text-lg">{item.title}</span>
+                </Link>
+              )}
             </React.Fragment>
           );
         })}

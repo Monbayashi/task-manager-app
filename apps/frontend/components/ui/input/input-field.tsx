@@ -15,6 +15,7 @@ type InputFieldProps<T extends FieldValues> = {
   disabled?: boolean;
   defaultValue?: string;
   autoComplete?: 'off' | 'on' | 'one-time-code';
+  ariaLabel?: string;
 };
 
 /** Input - テキスト/メールアドレス */
@@ -29,6 +30,7 @@ export const InputField = <T extends FieldValues>({
   disabled = false,
   defaultValue,
   autoComplete = 'on',
+  ariaLabel,
 }: InputFieldProps<T>) => {
   return (
     <Field>
@@ -50,6 +52,7 @@ export const InputField = <T extends FieldValues>({
         disabled={disabled}
         defaultValue={defaultValue}
         autoComplete={autoComplete}
+        aria-label={ariaLabel}
       />
     </Field>
   );

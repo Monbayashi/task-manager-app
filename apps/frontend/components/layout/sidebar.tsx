@@ -80,7 +80,11 @@ export const SideBar = () => {
             className="z-modal fixed inset-y-0 left-0 flex h-dvh w-64 flex-col overflow-y-auto bg-white shadow-2xl transition-transform duration-300 ease-in-out data-closed:-translate-x-full"
           >
             <div className="flex justify-end px-4 pt-3">
-              <button onClick={onMenuClose} className="rounded-md p-2 hover:bg-gray-100 focus:ring-2 focus:ring-orange-400 focus:outline-none">
+              <button
+                aria-label="メニュー非表示"
+                onClick={onMenuClose}
+                className="rounded-md p-2 hover:bg-gray-100 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+              >
                 <XMarkIcon className="size-6" />
               </button>
             </div>

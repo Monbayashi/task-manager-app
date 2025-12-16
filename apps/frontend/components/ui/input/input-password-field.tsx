@@ -45,6 +45,8 @@ export const InputPasswordField = <T extends FieldValues>({
         />
         <button
           type="button"
+          aria-label={show ? 'パスワード表示' : 'パスワード非表示'}
+          aria-pressed={show}
           onClick={() => setShow((prev) => !prev)}
           className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-gray-700"
         >
