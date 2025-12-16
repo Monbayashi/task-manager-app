@@ -24,7 +24,7 @@ export function ToastAlerts() {
           {alert.type === 'error' && <ExclamationTriangleIcon className="size-10 pr-2" />}
           {alert.type === 'info' && <InformationCircleIcon className="size-10 pr-2" />}
           <span className="whitespace-pre-wrap">{alert.message}</span>
-          <button className="ml-4 text-gray-700 hover:opacity-80" onClick={() => removeAlerts(alert.id)}>
+          <button aria-label="メッセージを閉じる" className="ml-4 text-gray-700 hover:opacity-80" onClick={() => removeAlerts(alert.id)}>
             <XMarkIcon className="size-6" />
           </button>
         </div>

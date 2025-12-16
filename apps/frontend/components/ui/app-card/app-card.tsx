@@ -24,10 +24,10 @@ export const AppCard = (props: AppCardProps) => {
   const { children, title, description, isBack, cancel } = props;
   const router = useRouter();
   return (
-    <div className="flex min-h-dvh w-full flex-col items-center justify-center bg-gray-100">
+    <main className="flex min-h-dvh w-full flex-col items-center justify-center bg-gray-100">
       <div className="my-3 flex items-center justify-center sm:my-4">
         <img src="/android-chrome-192x192.png" alt="アプリのロゴ" className="mr-3 size-6 object-contain sm:size-7 sm:size-8" />
-        <h2 className="text-center text-xl font-bold text-gray-800 sm:text-3xl">タスク管理 App</h2>
+        <h1 className="text-center text-xl font-bold text-gray-800 sm:text-3xl">タスク管理 App</h1>
       </div>
       <div className="max-w-lg rounded-3xl bg-white py-4 shadow-lg sm:py-6">
         <div className="mx-auto max-w-screen-2xl px-4 sm:px-8">
@@ -57,6 +57,6 @@ export const AppCard = (props: AppCardProps) => {
           {children}
         </div>
       </div>
-    </div>
+    </main>
   );
 };

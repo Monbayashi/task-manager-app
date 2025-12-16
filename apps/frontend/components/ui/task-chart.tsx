@@ -7,9 +7,9 @@ import { Doughnut } from 'react-chartjs-2';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const STATUS_COLOR = {
-  todo: '#05df72',
-  doing: '#fdc700',
-  done: '#c27aff',
+  todo: '#007a41',
+  doing: '#9b6b00',
+  done: '#4e19a8',
 } as const;
 
 const STATUS_TEXT = {
@@ -92,7 +92,6 @@ export const TaskStatusDonutChart = (props: TaskStatusDonutChartProps) => {
         <Doughnut data={chartData} options={chartOptions} plugins={[centerTextPlugin]} />
       </div>
 
-      {/* 下にシンプルなリスト（絶対切れない！！） */}
       <div className="mt-2 grid grid-cols-3 gap-4 text-center">
         {props.statusList.map((item) => (
           <div key={item.label}>

@@ -173,6 +173,7 @@ export default function TasksEditPage() {
                 {teamId && taskId && !isTitleEdit && !isStatusEdit && !isTimeEdit && !isDiscriptionEdit && !isTagsEdit && (
                   <Menu>
                     <MenuButton
+                      aria-label="操作メニューを開く"
                       className={clsx(
                         'flex cursor-pointer items-center justify-center gap-2 rounded-lg border p-1.5 text-center text-sm font-semibold ring-orange-400 transition duration-100 outline-none focus:ring focus-visible:ring sm:text-base',
                         'border-gray-400 bg-white text-gray-800 hover:bg-gray-100 active:bg-gray-200 disabled:bg-gray-200'

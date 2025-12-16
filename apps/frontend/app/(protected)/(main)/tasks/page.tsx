@@ -290,7 +290,7 @@ export default function TasksPage() {
             <table className="min-w-full table-fixed divide-y-2 divide-gray-200 text-sm sm:text-base">
               <thead className="ltr:text-left rtl:text-right">
                 <tr className="*:font-medium *:text-gray-900">
-                  <th className="w-12 min-w-12 sm:w-14 sm:min-w-14"></th>
+                  <th className="w-12 min-w-12 text-center sm:w-14 sm:min-w-14">操作</th>
                   <th className="w-28 min-w-28 px-3 py-2 text-center whitespace-nowrap">状態</th>
                   <th className="px-3 py-2 text-center whitespace-nowrap">タイトル</th>
                   <th className="w-40 min-w-40 px-3 py-2 text-center whitespace-nowrap">開始日時</th>
@@ -304,6 +304,7 @@ export default function TasksPage() {
                     <td className="px-3 py-2 text-center whitespace-nowrap">
                       <Menu>
                         <MenuButton
+                          aria-label="操作メニューを開く"
                           className={clsx(
                             'flex cursor-pointer items-center justify-center gap-2 rounded-lg border p-1 text-center text-sm font-semibold ring-orange-400 transition duration-100 outline-none sm:text-base',
                             'border-gray-400 bg-white text-gray-800 hover:bg-gray-100 focus:border-orange-400 focus:ring-2 active:bg-gray-200 disabled:bg-gray-200'
