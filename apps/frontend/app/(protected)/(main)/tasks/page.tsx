@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ReadonlyURLSearchParams, useRouter, useSearchParams } from 'next/navigation';
 import { useTag } from '@/api/tags/useTag';
 import { useTasksInfinite } from '@/api/tasks/useTasksInfinite';
-import { AppCardButton } from '@/components/ui/app-card/app-card-button';
+import { AppButton } from '@/components/ui/button';
 import { InputDateField } from '@/components/ui/input/input-data-field';
 import { Selectbox } from '@/components/ui/selectbox';
 import { Tag, TagStatus } from '@/components/ui/tag';
@@ -12,7 +12,7 @@ import { SearchTasksFormType, searchTasksFormSchema } from '@/lib/schemas/search
 import { useTaskSearchStore } from '@/store/taskSearchStore';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon, EllipsisVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/20/solid';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
 import { format } from 'date-fns';
@@ -190,19 +190,22 @@ export default function TasksPage() {
         <div className="p-4 md:p-6">
           <Disclosure as="div" className="rounded-md border border-gray-400 bg-gray-100 p-2 sm:p-4" defaultOpen={false}>
             <DisclosureButton className="group flex w-full items-center p-1 ring-orange-400 outline-none focus:ring-2">
-              <span className="flex flex-wrap justify-center gap-2">
-                <span className="text-base font-medium text-gray-800 md:text-lg">検索条件:</span>
-                <span className="rounded-md bg-white p-1 text-sm ring ring-gray-400">ステータス:{searchedStatusGroup?.text}</span>
-                <span className="rounded-md bg-white p-1 text-sm ring ring-gray-400">ソート対象:{searchedIndexType?.text}</span>
-                <span className="rounded-md bg-white p-1 text-sm ring ring-gray-400">ソート:{searchedSort?.text}</span>
-                <span className="rounded-md bg-white p-1 text-sm ring ring-gray-400">from～to:{searchedFromTo}</span>
+              <span className="flex flex-wrap items-center justify-start gap-2 text-xs md:text-sm">
+                <span className="flex items-center text-gray-800">
+                  <MagnifyingGlassIcon className="size-4 md:size-5" />
+                  <span className="text-sm md:text-base">検索条件:</span>
+                </span>
+                <span className="rounded-md bg-white p-1 ring ring-gray-400">ステータス: {searchedStatusGroup?.text}</span>
+                <span className="rounded-md bg-white p-1 ring ring-gray-400">ソート対象: {searchedIndexType?.text}</span>
+                <span className="rounded-md bg-white p-1 ring ring-gray-400">ソート: {searchedSort?.text}</span>
+                <span className="rounded-md bg-white p-1 ring ring-gray-400">from～to: {searchedFromTo}</span>
               </span>
               <span className="grow" />
               <ChevronDownIcon className="size-8 fill-gray-800 group-data-open:rotate-180" />
             </DisclosureButton>
             <DisclosurePanel className="mt-2 text-sm/5 text-gray-800">
-              <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full rounded-md pr-12">
-                <div className="flex flex-wrap gap-4 p-6 sm:p-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="mx-auto w-full rounded-md pr-6 sm:pr-12">
+                <div className="flex flex-wrap gap-2 p-4 sm:gap-4 sm:p-6">
                   <Controller
                     control={control}
                     name="statusGroup"
@@ -265,35 +268,29 @@ export default function TasksPage() {
                   />
                 </div>
                 <div className="flex justify-end">
-                  <AppCardButton type="submit" disabled={isSubmitting || isLoading} name="アカウントを作成">
+                  <AppButton type="submit" disabled={isSubmitting || isLoading} name="アカウントを作成">
+                    <MagnifyingGlassIcon className="size-4 md:size-5" />
                     {isSubmitting || isLoading ? '・・・検索中' : '検索'}
-                  </AppCardButton>
+                  </AppButton>
                 </div>
               </form>
             </DisclosurePanel>
           </Disclosure>
         </div>
         <div className="px-4">
-          <div className="flex items-center justify-between px-4 md:px-9">
-            <h2 className="text-gray-60 py-3 text-base font-bold md:text-lg">タスク一覧</h2>
-            <button
-              type="button"
-              className={clsx(
-                'flex items-center justify-center rounded-md border border-gray-600 bg-white px-3 py-1.5 text-base ring-orange-400 transition duration-100 outline-none',
-                'disabled:bg-gray-100g hover:bg-blue-200 focus:border-orange-400 focus:ring-2 active:bg-gray-200'
-              )}
-              onClick={onClickNewPage}
-            >
-              <PlusIcon className="mr-2 size-5 text-green-800" />
+          <div className="flex items-center justify-between px-4 pb-1 md:px-9">
+            <h2 className="text-gray-60 py-2 text-base font-bold md:text-lg">タスク一覧</h2>
+            <AppButton type="button" disabled={false} name="新規登録" onClick={onClickNewPage}>
+              <PlusIcon className="size-4 text-green-800 md:size-5" />
               新規登録
-            </button>
+            </AppButton>
           </div>
           <hr className="border text-gray-200" />
           <div className="min-w-0 overflow-x-auto">
-            <table className="min-w-full table-fixed divide-y-2 divide-gray-200">
+            <table className="min-w-full table-fixed divide-y-2 divide-gray-200 text-sm sm:text-base">
               <thead className="ltr:text-left rtl:text-right">
                 <tr className="*:font-medium *:text-gray-900">
-                  <th className="w-16 min-w-16 px-3 py-2 text-center whitespace-nowrap"></th>
+                  <th className="w-12 min-w-12 sm:w-14 sm:min-w-14"></th>
                   <th className="w-28 min-w-28 px-3 py-2 text-center whitespace-nowrap">状態</th>
                   <th className="px-3 py-2 text-center whitespace-nowrap">タイトル</th>
                   <th className="w-40 min-w-40 px-3 py-2 text-center whitespace-nowrap">開始日時</th>
@@ -312,7 +309,7 @@ export default function TasksPage() {
                             'border-gray-400 bg-white text-gray-800 hover:bg-gray-100 focus:border-orange-400 focus:ring-2 active:bg-gray-200 disabled:bg-gray-200'
                           )}
                         >
-                          <EllipsisVerticalIcon className="size-6 fill-gray-600" />
+                          <EllipsisVerticalIcon className="size-5 fill-gray-600 sm:size-6" />
                         </MenuButton>
                         <MenuItems
                           transition

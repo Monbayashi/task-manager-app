@@ -63,7 +63,7 @@ export const Breadcrumbs = () => {
   const breadcrumbsList = getBreadcrumbsList(pathName);
 
   return (
-    <div className="mt-20 h-16 bg-gray-100 lg:mt-0">
+    <div className="mt-16 h-14 bg-gray-100 lg:mt-0 lg:h-16">
       <div className="flex h-full items-center overflow-x-auto overflow-y-hidden px-3 py-4 whitespace-nowrap md:px-6">
         <span className="-px-2 flex items-center text-gray-800">
           <ClipboardDocumentCheckIcon className="size-5 md:size-6" />

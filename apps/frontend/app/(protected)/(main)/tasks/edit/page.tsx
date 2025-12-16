@@ -24,7 +24,8 @@ import {
 } from '@/lib/schemas/upd-task-form.schema';
 import { useAlertStore } from '@/store/alert';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { CheckIcon, EllipsisVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { CheckIcon } from '@heroicons/react/20/solid';
+import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
 import { format } from 'date-fns';
@@ -328,7 +329,7 @@ export default function TasksEditPage() {
                     <div>
                       {tagsErrors.tagRefs?.message && <p className="text-sm text-red-500">{tagsErrors.tagRefs.message}</p>}
                       <Listbox value={selected} onChange={(newSelected) => field.onChange(newSelected.map((p) => p.tagId))} multiple>
-                        <ListboxButton className="flex h-12 items-center gap-2 rounded border px-3 py-2">
+                        <ListboxButton className="flex items-center gap-2 rounded border px-3 py-2">
                           {selected == null || selected.length === 0 ? (
                             <span className="px-2 text-sm text-gray-600">未選択</span>
                           ) : (
@@ -336,7 +337,7 @@ export default function TasksEditPage() {
                           )}
                         </ListboxButton>
                         <ListboxOptions
-                          anchor="bottom start"
+                          anchor="bottom end"
                           transition
                           className={clsx(
                             'z-popover min-w-60 rounded-xl border bg-white p-1 [--anchor-gap:--spacing(1)] focus:outline-none',

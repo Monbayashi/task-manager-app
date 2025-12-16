@@ -66,7 +66,7 @@ export default function HomePage() {
   return (
     <div className="px-2 2xl:px-24">
       <div className="w-full p-2">
-        <h2 className="py-4 pl-6 text-xl font-bold text-gray-600">ステータス件数</h2>
+        <h2 className="py-2 pl-6 text-lg font-bold text-gray-600 sm:py-4 sm:text-xl">ステータス件数</h2>
         <hr className="text-gray-400" />
         <div className="flex flex-wrap gap-4 p-4 xl:gap-8">
           <HomeCard title="ステータス 件数 - すべて">
@@ -117,7 +117,7 @@ export default function HomePage() {
       </div>
       <div className="my-5 w-full p-2">
         <div className="flex items-end justify-between">
-          <h2 className="py-4 pl-6 text-xl font-bold text-gray-600">開始日遅延タスク</h2>
+          <h2 className="py-2 pl-6 text-lg font-bold text-gray-600 sm:py-4 sm:text-xl">開始日遅延タスク</h2>
           <Link
             href={startDelayLink}
             className="-px-2 flex items-center rounded-md text-blue-800 ring-orange-400 outline-none hover:underline focus:ring-2"
@@ -130,7 +130,7 @@ export default function HomePage() {
       </div>
       <div className="my-5 w-full p-2">
         <div className="flex items-end justify-between">
-          <h2 className="py-4 pl-6 text-xl font-bold text-gray-600">終了日遅延タスク</h2>
+          <h2 className="py-2 pl-6 text-lg font-bold text-gray-600 sm:py-4 sm:text-xl">終了日遅延タスク</h2>
           <Link
             href={endDelayLink}
             className="-px-2 flex items-center rounded-md text-blue-800 ring-orange-400 outline-none hover:underline focus:ring-2"

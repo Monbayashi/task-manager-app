@@ -6,6 +6,7 @@ import { useInvitations } from '@/api/invitations/useInvitations';
 import { useTag } from '@/api/tags/useTag';
 import { useTeamUsers } from '@/api/teams/useTeamUsers';
 import { useUpdateTeam } from '@/api/teams/useUpdateTeam';
+import { AppButton } from '@/components/ui/button';
 import { InputField } from '@/components/ui/input/input-field';
 import { UpdTeamFormType, updTeamFormSchema } from '@/lib/schemas/upd-team-form.schema';
 import { useAlertStore } from '@/store/alert';
@@ -179,7 +180,7 @@ export default function SettingsPage() {
       <div className="container mx-auto">
         <div className="w-full p-4">
           {/* チーム更新 */}
-          <h2 className="mb-1.5 text-xl font-bold text-gray-600">チーム更新</h2>
+          <h2 className="mb-1.5 text-base font-bold text-gray-600 sm:text-lg">チーム更新</h2>
           <hr className="text-gray-400" />
           <form onSubmit={teamNameHandleSubmit(onSubmitTeamName)} className="mt-3 flex w-full items-end gap-1 rounded-md">
             <div className="w-72">
@@ -196,8 +197,9 @@ export default function SettingsPage() {
                 type="submit"
                 disabled={updateTeam.isMutating}
                 className={clsx(
-                  'rounded-md border border-gray-600 bg-green-100 px-3 py-2 text-base ring-orange-400 transition duration-100 outline-none',
-                  'disabled:bg-gray-100g hover:bg-green-200 focus:border-orange-400 focus:ring-2 active:bg-gray-200'
+                  'rounded-md border border-gray-600 bg-green-100 px-2 text-base ring-orange-400 transition duration-100 outline-none',
+                  'disabled:bg-gray-100g hover:bg-green-200 focus:border-orange-400 focus:ring-2 active:bg-gray-200',
+                  'py-2.5 text-sm sm:py-2 sm:text-base'
                 )}
               >
                 更新
@@ -207,7 +209,7 @@ export default function SettingsPage() {
         </div>
         {/* チームメンバー */}
         <div className="p-4">
-          <h2 className="mb-1.5 text-xl font-bold text-gray-600">チームメンバー</h2>
+          <h2 className="mb-1.5 text-base font-bold text-gray-600 sm:text-lg">チームメンバー</h2>
           <hr className="text-gray-400" />
           <div className="max-w-4xl overflow-x-auto">
             <table className="min-w-full divide-y-2 divide-gray-200">
@@ -242,7 +244,7 @@ export default function SettingsPage() {
         </div>
         {/* チーム招待 */}
         <div className="p-4">
-          <h2 className="mb-1.5 text-xl font-bold text-gray-600">チーム招待</h2>
+          <h2 className="mb-1.5 text-base font-bold text-gray-600 sm:text-lg">チーム招待</h2>
           <hr className="text-gray-400" />
           <div className="w-full overflow-x-auto">
             <table className="min-w-full divide-y-2 divide-gray-200">
@@ -281,24 +283,17 @@ export default function SettingsPage() {
                 ))}
               </tbody>
             </table>
-            <div className="mt-8 mb-2 flex justify-end px-2">
-              <button
-                type="button"
-                className={clsx(
-                  'flex items-center justify-center rounded-md border border-gray-600 bg-white px-3 py-1.5 text-base ring-orange-400 transition duration-100 outline-none',
-                  'disabled:bg-gray-100g hover:bg-gray-200 focus:border-orange-400 focus:ring-2 active:bg-gray-200'
-                )}
-                onClick={onInviteUserOpen}
-              >
-                <PlusIcon className="mr-2 size-5 text-green-800" />
-                チーム招待
-              </button>
-            </div>
+          </div>
+          <div className="mt-8 mb-2 flex justify-end px-2">
+            <AppButton type="button" disabled={false} name="チーム招待" onClick={onInviteUserOpen}>
+              <PlusIcon className="size-4 text-green-800 md:size-5" />
+              チーム招待
+            </AppButton>
           </div>
         </div>
         {/* タグ関連 */}
         <div className="p-4">
-          <h2 className="mb-1.5 text-xl font-bold text-gray-600">タグ一覧</h2>
+          <h2 className="mb-1.5 text-base font-bold text-gray-600 sm:text-lg">タグ一覧</h2>
           <hr className="text-gray-400" />
           <div className="overflow-x-auto">
             <table className="w-full divide-y-2 divide-gray-200">
@@ -323,19 +318,12 @@ export default function SettingsPage() {
                 ))}
               </tbody>
             </table>
-            <div className="mt-8 mb-2 flex justify-end px-2">
-              <button
-                type="button"
-                className={clsx(
-                  'flex items-center justify-center rounded-md border border-gray-600 bg-white px-3 py-1.5 text-base ring-orange-400 transition duration-100 outline-none',
-                  'disabled:bg-gray-100g hover:bg-gray-200 focus:border-orange-400 focus:ring-2 active:bg-gray-200'
-                )}
-                onClick={onCreateOpen}
-              >
-                <PlusIcon className="mr-2 size-5 text-green-800" />
-                新規登録
-              </button>
-            </div>
+          </div>
+          <div className="mt-8 mb-2 flex justify-end px-2">
+            <AppButton type="button" disabled={false} name="タグ登録" onClick={onCreateOpen}>
+              <PlusIcon className="size-4 text-green-800 md:size-5" />
+              タグ登録
+            </AppButton>
           </div>
         </div>
       </div>
