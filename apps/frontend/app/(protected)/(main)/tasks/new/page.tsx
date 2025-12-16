@@ -148,7 +148,14 @@ export default function TasksNewPage() {
             <div>
               <label className="inline-block text-sm text-gray-800 sm:text-base">説明</label>
               {errors.discription?.message && <p className="text-sm text-red-500">{errors.discription.message}</p>}
-              <MDEditor commands={[]} preview="edit" value={field.value} height={500} onChange={(v) => field.onChange(v ?? '')} />
+              <MDEditor
+                commands={[]}
+                preview="edit"
+                value={field.value}
+                height={500}
+                onChange={(v) => field.onChange(v ?? '')}
+                data-color-mode="light"
+              />
             </div>
           )}
         />

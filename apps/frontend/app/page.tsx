@@ -27,7 +27,7 @@ export default function RootPage() {
   }, [router, searchParam]);
 
   return (
-    <div className="flex min-h-full w-full flex-col items-center justify-center bg-gray-100">
+    <div className="flex min-h-dvh w-full flex-col items-center justify-center bg-gray-100">
       <div className="mb-4 flex items-center justify-center md:mb-8">
         <img src="/android-chrome-192x192.png" alt="アプリのロゴ" className="mr-3 h-8 w-8 object-contain" />
         <h2 className="text-center text-2xl font-bold text-gray-800 lg:text-3xl">タスク管理 App</h2>

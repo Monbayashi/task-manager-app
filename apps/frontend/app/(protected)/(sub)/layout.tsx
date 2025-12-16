@@ -7,7 +7,7 @@ export default function ProtectedSubLayout({
 }>) {
   return (
     <>
-      <div className="flex min-h-screen w-full flex-col">
+      <div className="flex min-h-dvh w-full flex-col">
         <main className="mt-0 w-full flex-1">{children}</main>
       </div>
     </>

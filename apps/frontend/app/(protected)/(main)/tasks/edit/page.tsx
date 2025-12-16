@@ -381,7 +381,14 @@ export default function TasksEditPage() {
               render={({ field }) => (
                 <div>
                   {discriptionErrors.discription?.message && <p className="text-sm text-red-500">{discriptionErrors.discription.message}</p>}
-                  <MDEditor preview="edit" value={field.value} onChange={(v) => field.onChange(v ?? '')} height={500} />
+                  <MDEditor
+                    preview="edit"
+                    commands={[]}
+                    value={field.value}
+                    onChange={(v) => field.onChange(v ?? '')}
+                    height={500}
+                    data-color-mode="light"
+                  />
                 </div>
               )}
             />
@@ -391,7 +398,7 @@ export default function TasksEditPage() {
           </form>
         ) : (
           <div className="prose max-w-none p-4 sm:p-8">
-            <MarkdownPreview source={taskData.data?.discription || ''} />
+            <MarkdownPreview source={taskData.data?.discription || ''} data-color-mode="light" />
           </div>
         )}
       </div>
