@@ -21,7 +21,7 @@ export default function RootLayout({
 
   return (
     <html lang="ja">
-      <body className="flex min-h-screen bg-gray-50 text-gray-900">
+      <body className="flex min-h-dvh bg-gray-50 text-gray-900">
         <Suspense>{children}</Suspense>
       </body>
     </html>

@@ -77,7 +77,7 @@ export const SideBar = () => {
           <div className="z-modal-backdrop fixed inset-0 bg-black/30" aria-hidden="true" />
           <DialogPanel
             transition
-            className="z-modal fixed inset-y-0 left-0 flex h-screen w-64 flex-col overflow-y-auto bg-white shadow-2xl transition-transform duration-300 ease-in-out data-closed:-translate-x-full"
+            className="z-modal fixed inset-y-0 left-0 flex h-dvh w-64 flex-col overflow-y-auto bg-white shadow-2xl transition-transform duration-300 ease-in-out data-closed:-translate-x-full"
           >
             <div className="flex justify-end px-4 pt-3">
               <button onClick={onMenuClose} className="rounded-md p-2 hover:bg-gray-100 focus:ring-2 focus:ring-orange-400 focus:outline-none">
@@ -99,7 +99,7 @@ export const SideBar = () => {
         </Dialog>
       )}
       {/* PC時のサイドメニュー */}
-      <aside className="fixed hidden h-screen w-64 overflow-y-auto border-r border-gray-200 bg-white lg:flex lg:flex-col">
+      <aside className="fixed hidden h-dvh w-64 overflow-y-auto border-r border-gray-200 bg-white lg:flex lg:flex-col">
         <SidebarContent
           pathName={pathName}
           teamId={teamId}

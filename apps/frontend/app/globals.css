@@ -17,3 +17,12 @@ body {
   --z-index-skip-link: 999;
   --z-index-debug: 9999;
 }
+
+.w-md-editor-text-input,
+.w-md-editor-text-pre .code-line {
+  font-size: 16px !important;
+  line-height: 16px !important;
+}
+.w-md-editor-text-pre .code-line {
+  display: block;
+}

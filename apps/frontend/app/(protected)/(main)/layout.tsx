@@ -28,7 +28,7 @@ export default function ProtectedMainLayout({
   return (
     <>
       <SideBar />
-      <div className="flex min-h-screen w-full min-w-0 flex-col lg:ml-64">
+      <div className="flex min-h-dvh w-full min-w-0 flex-col lg:ml-64">
         <Breadcrumbs />
         <Header />
         <main className="w-full flex-1 lg:mt-0">{children}</main>

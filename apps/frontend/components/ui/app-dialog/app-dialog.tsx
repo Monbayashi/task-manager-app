@@ -27,7 +27,7 @@ export const AppDialog = ({ isOpen, title, description, children, type = 'defaul
   return (
     <Dialog open={isOpen} as="div" className="relative focus:outline-none" onClose={onClose}>
       <div className="z-modal-backdrop fixed inset-0 w-screen overflow-y-auto bg-black/25" />
-      <div className="z-modal fixed inset-0 flex min-h-full items-center justify-center p-4">
+      <div className="z-modal fixed inset-0 flex min-h-dvh items-center justify-center p-4">
         <DialogPanel
           transition
           className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg backdrop-blur-2xl duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
