@@ -106,7 +106,11 @@ export class TeamsService {
 
   /** チームメンバー更新 */
   async updateTeamMember(userId: string, param: ReqParamTeamMemberUpdateDTO, body: ReqBodyTeamMemberUpdateDTO): Promise<ResBodyTeamMemberUpdateType> {
-    await this.commonGetTeamMember(userId, param.teamId as string);
+    const teamMember = await this.commonGetTeamMember(userId, param.teamId as string);
+    const userRole = teamMember.find((val) => val.SK === `USER#${userId}`)?.user_team_role;
+    if (userRole !== 'admin') {
+      throw new UnauthorizedException('チームメンバーに対する操作権限がありません');
+    }
     // チームメンバーの更新
     const result = await this.taskCommandService.updateTeamMember({ teamId: param.teamId, userId: param.userId, role: body.role });
     return {
@@ -117,7 +121,11 @@ export class TeamsService {
 
   /** チームメンバー削除 */
   async deleteTeamMember(userId: string, param: ReqParamTeamMemberDeleteDTO): Promise<ResBodyTeamMemberDeleteType> {
-    await this.commonGetTeamMember(userId, param.teamId as string);
+    const teamMember = await this.commonGetTeamMember(userId, param.teamId as string);
+    const userRole = teamMember.find((val) => val.SK === `USER#${userId}`)?.user_team_role;
+    if (userRole !== 'admin') {
+      throw new UnauthorizedException('チームメンバーに対する操作権限がありません');
+    }
     // チームメンバーの更新
     const result = await this.taskCommandService.deleteTeamMember({ teamId: param.teamId, userId: param.userId });
     return {

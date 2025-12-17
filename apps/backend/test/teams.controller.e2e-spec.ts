@@ -338,6 +338,26 @@ describe('TeamsController (e2e)', () => {
     });
   });
 
+  it('/api/teams/${teamId}/team-member/${userId} (PUT) failure:チームメンバーに対する操作権限なし', async () => {
+    // user4をmemberに戻す。
+    // モック (user3)
+    mockVerify.mockResolvedValueOnce({ sub: user3.userId });
+    await request(app.getHttpServer())
+      .put(`/api/teams/${user3.teamId}/team-member/${user4.userId}`)
+      .set('Authorization', 'Bearer mock-token')
+      .send({ role: 'member' })
+      .expect(200);
+    // user4(member)がuser3のチームメンバーの更新
+    // モック (user4)
+    mockVerify.mockResolvedValueOnce({ sub: user4.userId });
+    const response = await request(app.getHttpServer())
+      .put(`/api/teams/${user3.teamId}/team-member/${user3.userId}`)
+      .set('Authorization', 'Bearer mock-token')
+      .send({ role: 'member' })
+      .expect(401);
+    expect(response.body).toEqual({ message: 'チームメンバーに対する操作権限がありません', error: 'Unauthorized', statusCode: 401 });
+  });
+
   it('/api/teams/${teamId}/team-member/${userId} (PUT) failure:参照権限のないチーム', async () => {
     // モック
     mockVerify.mockResolvedValue({ sub: DEFAULT_USER1.userId });
@@ -368,6 +388,17 @@ describe('TeamsController (e2e)', () => {
     });
   });
   // HR: -------------------------------------------- [/api/teams/${teamId}/team-member/${userId}] (DELETE) --------------------------------------------
+  it('/api/teams/${teamId}/team-member/${userId} (DELETE) failure:チームメンバーに対する操作権限なし', async () => {
+    // モック
+    mockVerify.mockResolvedValue({ sub: user4.userId });
+    // テスト
+    const response = await request(app.getHttpServer())
+      .delete(`/api/teams/${user3.teamId}/team-member/${user3.userId}`)
+      .set('Authorization', 'Bearer mock-token')
+      .expect(401);
+    expect(response.body).toEqual({ message: 'チームメンバーに対する操作権限がありません', error: 'Unauthorized', statusCode: 401 });
+  });
+
   it('/api/teams/${teamId}/team-member/${userId} (DELETE) failure:参照権限のないチーム', async () => {
     // モック
     mockVerify.mockResolvedValue({ sub: DEFAULT_USER1.userId });
