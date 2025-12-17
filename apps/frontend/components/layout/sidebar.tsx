@@ -38,11 +38,11 @@ export const SideBar = () => {
   /** ログアウト処理 */
   const onLogout = async () => {
     try {
-      router.push('/login/');
-      await signOut();
       userLogout();
       mutate(() => true, undefined, { revalidate: true });
+      await signOut();
       addAlert(`ログアウトに成功しました`, 'success', 5000);
+      router.push('/login/');
     } catch (err) {
       if (isAmplifyAuthError(err)) {
         addAlert(`ログアウトに失敗しました\n${err.message}`, 'error');

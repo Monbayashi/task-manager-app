@@ -20,7 +20,7 @@ export default function ProtectedLayout({
   const [isLoadingExsisted, setIsLoadingExsisted] = useState(false);
   // ユーザデータ取得
   useSyncMe();
-  const stauts = useUserStore((s) => s.status);
+  const status = useUserStore((s) => s.status);
   const user = useUserStore((s) => s.user);
 
   // ログイン済みチェック
@@ -41,17 +41,26 @@ export default function ProtectedLayout({
 
   // 登録ユーザ存在チェック
   useEffect(() => {
-    if (stauts === 'done') {
-      if (!user) {
-        router.push(`/wellcome/`);
-        setTimeout(() => setIsLoadingExsisted(true), 500);
-      } else if (user.teams.length === 0) {
-        router.push('/new-team/');
-        setTimeout(() => setIsLoadingExsisted(true), 500);
+    if (status === 'init') return;
+
+    if (status === 'empty' || user == null) {
+      // ユーザが存在しない場合
+      if (!pathName.startsWith('/wellcome')) {
+        return router.push(`/wellcome/`);
       }
-      setTimeout(() => setIsLoadingExsisted(true), 500);
+    } else if (status === 'done' && user.teams.length === 0) {
+      // ユーザーが存在し、チームが一つもない場合
+      if (!pathName.startsWith('/new-team')) {
+        return router.push('/new-team/');
+      }
     }
-  }, [router, stauts, user]);
+
+    if (isLoadingExsisted === false) {
+      setTimeout(() => {
+        setIsLoadingExsisted(true);
+      }, 500);
+    }
+  }, [isLoadingExsisted, pathName, router, status, user]);
 
   return (
     <>
