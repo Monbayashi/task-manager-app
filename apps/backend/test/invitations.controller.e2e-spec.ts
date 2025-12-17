@@ -135,6 +135,78 @@ describe('InvitationsController (e2e)', () => {
     });
   });
 
+  let user5: { userId: string; teamId: string; userName: string; email: string; teamName: string };
+  let user6: { userId: string; teamId: string; userName: string; email: string; teamName: string };
+  const createTeamMember = async () => {
+    // ユーザ6作成
+    mockVerify.mockResolvedValue({ sub: uuid() });
+    const user6Payload = { userName: 'TEST USER6', email: 'test6@example.com', teamName: 'TEAM TEST USER6' };
+    const { body: user6ResBody }: { body: { userId: string; teamId: string } } = await request(app.getHttpServer())
+      .post('/api/users/register')
+      .set('Authorization', 'Bearer mock-token')
+      .send(user6Payload)
+      .expect(201);
+    // ユーザ5作成
+    mockVerify.mockResolvedValue({ sub: uuid() });
+    const user5Payload = { userName: 'TEST USER5', email: 'test5@example.com', teamName: 'TEAM TEST USER5' };
+    const { body: user5ResBody }: { body: { userId: string; teamId: string } } = await request(app.getHttpServer())
+      .post('/api/users/register')
+      .set('Authorization', 'Bearer mock-token')
+      .send(user5Payload)
+      .expect(201);
+    user5 = { ...user5Payload, ...user5ResBody };
+    user6 = { ...user6Payload, ...user6ResBody };
+    // テスト user5のチーム(TEAM TEST USER3)にuser6を招待する (MEMBER)
+    const inviteResponse = await request(app.getHttpServer())
+      .post(`/api/teams/${user5.teamId}/invitation`)
+      .set('Authorization', 'Bearer mock-token')
+      .send({ email: 'test6@example.com', role: 'member', teamName: 'TEAM TEST USER5' })
+      .expect(201);
+    // 招待トークン取得
+    const client = new DynamoDBClient({ endpoint: 'http://localhost:4567', region: 'ap-northeast-1' });
+    const tokenRes = await client.send(
+      new GetCommand({
+        TableName: 'task-table-invitation-v3',
+        Key: { PK: `TEAM#${inviteResponse.body?.teamId}`, SK: `INVITE#${inviteResponse.body?.inviteId}` },
+        ProjectionExpression: '#token',
+        ExpressionAttributeNames: { '#token': 'token' },
+      })
+    );
+    client.destroy();
+    const newInviteToken = tokenRes.Item!.token;
+    // user6がuser5のチームに参加
+    mockVerify.mockResolvedValue({ sub: user6.userId });
+    // チームメンバーに参加
+    await request(app.getHttpServer())
+      .post(`/api/teams/${inviteResponse.body?.teamId}/invitation/${inviteResponse.body?.inviteId}`)
+      .set('Authorization', 'Bearer mock-token')
+      .send({ token: newInviteToken })
+      .expect(201);
+  };
+
+  it('/api/teams/${teamId}/invitation (POST) failure:メンバー権限では、管理者を招待することはできません', async () => {
+    // テストデータ作成
+    await createTeamMember();
+    // テストデータ作成
+    mockVerify.mockResolvedValue({ sub: user6.userId });
+    // テスト user3のチーム(TEAM TEST USER3)にuser4を招待する
+    const payload = {
+      email: 'test@example.com',
+      role: 'admin',
+      teamName: 'TEAM TEST USER',
+    };
+    const response = await request(app.getHttpServer())
+      .post(`/api/teams/${user5.teamId}/invitation`)
+      .set('Authorization', 'Bearer mock-token')
+      .send(payload)
+      .expect(401);
+    expect(response.body).toEqual({
+      error: 'Unauthorized',
+      statusCode: 401,
+      message: 'メンバー権限では、管理者を招待することはできません',
+    });
+  });
+
   // HR: -------------------------------------------- [/api/teams/${teamId}/invitation] (GET) --------------------------------------------
   it('/api/teams/${teamId}/invitation (GET) success', async () => {
     // モック

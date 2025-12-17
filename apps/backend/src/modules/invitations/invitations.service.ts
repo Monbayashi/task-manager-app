@@ -83,7 +83,11 @@ export class InvitationsService {
     body: ReqBodyInvitationsRegisterDTO
   ): Promise<ResBodyInvitationsRegisterType> {
     const { teamId }: { teamId: string } = param;
-    await this.commonGetTeamMember(userId, teamId);
+    const teamMember = await this.commonGetTeamMember(userId, param.teamId as string);
+    const userRole = teamMember.find((val) => val.SK === `USER#${userId}`)?.user_team_role;
+    if (userRole !== 'admin' && body.role === 'admin') {
+      throw new UnauthorizedException('メンバー権限では、管理者を招待することはできません');
+    }
     const invitation = await this.invitationCommandService.createInvitation({
       teamId: teamId,
       email: body.email,

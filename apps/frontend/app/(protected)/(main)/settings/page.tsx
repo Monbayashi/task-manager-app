@@ -47,6 +47,8 @@ export default function SettingsPage() {
   const userIdMe = useAuthStore((s) => s.userId);
   const setUser = useUserStore((s) => s.setUser);
   const addAlert = useAlertStore((state) => state.addAlert);
+  /** 操作中のユーザロール */
+  const isAdmin = userData?.teams.find((val) => val.teamId === teamId)?.role === 'admin' ? true : false;
 
   // 個別更新 - (チーム)
   const updateTeam = useUpdateTeam(teamId);
@@ -218,7 +220,7 @@ export default function SettingsPage() {
                   <th className="px-3 py-2 text-center whitespace-nowrap">ユーザ名</th>
                   <th className="px-3 py-2 text-center whitespace-nowrap">ロール</th>
                   <th className="px-3 py-2 text-center whitespace-nowrap">参加日時</th>
-                  <th className="px-3 py-2 text-center whitespace-nowrap">アクション</th>
+                  {isAdmin && <th className="px-3 py-2 text-center whitespace-nowrap">アクション</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -229,13 +231,15 @@ export default function SettingsPage() {
                     <td className="px-3 py-2 text-center whitespace-nowrap">
                       {formatInTimeZone(new Date(user.joinedAt), 'Asia/Tokyo', 'yyyy/MM/dd HH:mm:ss')}
                     </td>
-                    <td className="px-3 py-2 text-center whitespace-nowrap">
-                      <UpdateDeleteButton
-                        disabled={userIdMe === user.userId}
-                        onUpdate={() => onUpdateTeamUserOpen(user)}
-                        onDelete={() => onDeleteTeamUserOpen(user)}
-                      />
-                    </td>
+                    {isAdmin && (
+                      <td className="px-3 py-2 text-center whitespace-nowrap">
+                        <UpdateDeleteButton
+                          disabled={userIdMe === user.userId}
+                          onUpdate={() => onUpdateTeamUserOpen(user)}
+                          onDelete={() => onDeleteTeamUserOpen(user)}
+                        />
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -338,6 +342,7 @@ export default function SettingsPage() {
       {teamId && (
         <CreateInvitationsDialog
           actionData={{ teamId, teamName: userData?.teams.find((team) => team.teamId === teamId)?.name || '不明' }}
+          isAdmin={isAdmin}
           isOpen={isInviteUserOpen}
           onClose={onInviteUserClose}
         />
