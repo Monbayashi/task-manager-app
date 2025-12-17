@@ -5,7 +5,6 @@ import useSWR from 'swr';
 import { ResBodyTasksTaskType } from '@repo/api-models/tasks';
 
 export const fetcherTask = async (url: string): Promise<ResBodyTasksTaskType> => {
-  console.log('☆fetcherTask');
   const result = await api.get<ResBodyTasksTaskType>(url);
   return result.data;
 };

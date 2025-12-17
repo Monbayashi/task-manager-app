@@ -20,7 +20,6 @@ export default function LoginPage() {
   const router = useRouter();
   const pathParams = useSearchParams();
   const redirect = pathParams.get('redirect');
-  console.log(redirect);
   const {
     register,
     handleSubmit,

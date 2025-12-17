@@ -23,7 +23,6 @@ export const useAuthStore = create<AuthState>((set, get) => {
         // signIn, signUp, tokenRefreshの時、更新
         try {
           const session = await fetchAuthSession();
-          // console.log(session);
           const accessToken = session.tokens?.accessToken?.toString() || null;
           const email = (session.tokens?.idToken?.payload.email as string) || null;
           const userId = session.userSub || null;
